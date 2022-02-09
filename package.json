@@ -1,0 +1,17 @@
+{
+  "name": "adventuresy_apis",
+  "version": "1.0.0",
+  "type":"module",
+  "description": "",
+  "main": "server.js",
+  "scripts": {},
+  "author": "Bishal Pandit",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.2",
+    "pg": "^8.7.3"
+  },
+  "devDependencies": {
+    "dotenv": "^16.0.0"
+  }
+}
