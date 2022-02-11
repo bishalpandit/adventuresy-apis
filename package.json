@@ -1,17 +1,22 @@
 {
   "name": "adventuresy_apis",
   "version": "1.0.0",
-  "type":"module",
+  "type": "module",
   "description": "",
   "main": "server.js",
   "scripts": {},
   "author": "Bishal Pandit",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.17.2",
     "pg": "^8.7.3"
   },
   "devDependencies": {
-    "dotenv": "^16.0.0"
+    "dotenv": "^16.0.0",
+    "husky": "^7.0.4",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.20.1"
   }
 }

@@ -9,4 +9,6 @@ const config = {
     ssl: true,
 }
 
-export const pool = new pg.Pool(config)
+const db = new pg.Pool(config)
+
+export default db;
