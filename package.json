@@ -12,9 +12,12 @@
   "dependencies": {
     "bcrypt": "^5.0.1",
     "chalk": "^5.0.0",
+    "cookie-session": "^2.0.0",
     "cors": "^2.8.5",
     "express": "^4.17.2",
     "nodemon": "^2.0.15",
+    "passport": "^0.5.2",
+    "passport-google-oauth20": "^2.0.0",
     "pg": "^8.7.3"
   },
   "devDependencies": {
