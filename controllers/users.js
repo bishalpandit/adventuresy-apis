@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt'
 import { row } from 'mathjs';
 
 
+
 export const getUserByID = async (req, res) => {
 
     try {
@@ -55,7 +56,7 @@ export const loginUser = async (req, res) => {
 
     try {
         const userExists = await db.query('SELECT ID FROM USERS WHERE EMAIL_ID = $1', [req.body.email])
-
+        console.log(req);
         if (!userExists.rowCount) {
             res.status(400).send('User Doesn\'t Exist. Sign Up!')
         } 
@@ -63,7 +64,7 @@ export const loginUser = async (req, res) => {
         const userQuery = {
             text: 'SELECT * FROM USERS WHERE EMAIL_ID = $1',
             values: [req.body.email]
-        }
+        } 
 
         const userRecord = await db.query(userQuery)
 

@@ -5,9 +5,10 @@ import chalk from 'chalk'
 import passport from 'passport'
 import cors from 'cors'
 import cookieSession from 'cookie-session'
-import './auth/passport.cjs'
+import './auth/passport.js'
 
 import userRoutes from './routes/users.js'
+import adventureRoutes from './routes/adventures.js'
 
 const app = express()
 
@@ -39,12 +40,14 @@ db.connect((err) => {
 })
 
 
-
-
-
 // Routes
 app.use('/users', userRoutes)
+app.use('/adventures', adventureRoutes)
 
+//Test Route
+app.get('/', (req, res, ) => {
+    res.json(req.profile)
+})
 
 const PORT = process.env.PORT || 5000
 
