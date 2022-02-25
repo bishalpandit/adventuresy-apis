@@ -41,8 +41,8 @@ db.connect((err) => {
 
 
 // Routes
-app.use('/users', userRoutes)
-app.use('/adventures', adventureRoutes)
+app.use('/api/users', userRoutes)
+app.use('/api/adventures', adventureRoutes)
 
 //Test Route
 app.get('/', (req, res, ) => {

@@ -1,7 +1,9 @@
 import { Router } from 'express'
-import { getAllAdventures } from '../controllers/adventures.js'
+import { getAdventures, getAdventureById } from '../controllers/adventures.js'
 const router = Router()
 
-router.get('/', getAllAdventures)
+router.get('/', getAdventures)
+
+router.get('/:id', getAdventureById)
 
 export default router;

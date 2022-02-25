@@ -1,7 +1,9 @@
-import db from "../configs/db";
+import db from "../configs/db.js";
 
-export const getAdventures = (req, res) => {
+export const getAdventures = async (req, res) => {
+
     const query = req.query
+    console.log(query);
     const { ctype, limit } = query
 
     let adventures;
@@ -9,11 +11,15 @@ export const getAdventures = (req, res) => {
     try {
 
         if (ctype) {
+            const selectQuery = {
+                popular: 'SELECT A.title, A.type, A.summary, A.price FROM ADVENTURES A JOIN RESERVATIONS R ON A.id = R.adventure_id GROUP BY A.id ORDER BY COUNT(*) DESC LIMIT 5'
+            }
 
             switch (ctype) {
                 // max reservations
+
                 case 'popular':
-                    adventures = await db.query(`SELECT A.title, A.type, A.summary, A.price FROM ADVENTURES A JOIN RESERVATIONS R ON A.id = R.adventure_id GROUP BY adventure_id ORDER BY COUNT(*) DESC LIMIT ${limit ? limit * 5 : 5}`)
+                    adventures = await db.query(selectQuery.popular)
                     break
                 // most booked last 2 months
                 case 'trending':
@@ -23,24 +29,25 @@ export const getAdventures = (req, res) => {
                     break
                 // high ratings
                 case 'recommended':
-
+                    break
+                default:
             }
         }
 
         else {
             // get all...
-            if(limit)
+            if (limit)
                 adventures = await db.query(`SELECT title, type, summary, price FROM ADVENTURES LIMIT ${limit}`)
             else
                 adventures = await db.query('SELECT title, type, summary, price FROM ADVENTURES')
         }
 
-        if (adventures.rowCount) {
-            res.status(200).json({
-                data: adventures.rows,
-                status: true
-            })
-        }
+
+        res.status(200).json({
+            data: adventures.rows,
+            status: true
+        })
+
 
     } catch (error) {
 
@@ -52,7 +59,34 @@ export const getAdventures = (req, res) => {
 
 
 }
-/*
-popular, trending, recent, limit
 
-*/
+
+export const getAdventureById = async (req, res) => {
+
+    try {
+        const ID = req.params.id;
+
+        const adventure = await db.query('SELECT * FROM ADVENTURES WHERE ID = $1', [ID])
+
+        if (adventure.rowCount) {
+            res.status(200).json({
+                data: adventure.rows[0],
+                status: true
+            })
+        }
+        else {
+            res.status(404).json({
+                msg: 'not found',
+                status: false
+            })
+        }
+
+    } catch (error) {
+
+        res.status(400).json({
+            error: error,
+            status: false
+        })
+    }
+
+}
