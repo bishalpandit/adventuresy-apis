@@ -60,7 +60,6 @@ export const getAdventures = async (req, res) => {
 
 }
 
-
 export const getAdventureById = async (req, res) => {
 
     try {
@@ -86,6 +85,85 @@ export const getAdventureById = async (req, res) => {
         res.status(400).json({
             error: error,
             status: false
+        })
+    }
+
+}
+
+export const getAdventuresByCategory = async (req, res) => {
+
+    try {
+        const query = req.query.c1;
+
+        let categories = '('
+
+        const queryArr = query.split(',')
+
+        for(let i=0; i<queryArr.length; i++) {
+            categories += "\'" +  queryArr[i] + "\'"
+            if(i != queryArr.length-1)
+                categories += ", "
+        }
+
+        categories += ')'
+
+        const adventure = await db.query(`SELECT * FROM ADVENTURES WHERE type IN ${categories}`)
+
+        if (adventure.rowCount) {
+            res.status(200).json({
+                data: adventure.rows,
+                status: true
+            })
+        }
+        else {
+            res.status(404).json({
+                msg: 'not found',
+                status: false
+            })
+        }
+
+    } catch (error) {
+
+        res.status(400).json({
+            error: error,
+            status: false
+        })
+    }
+
+}
+
+export const getAdventuresBySearch = async (req, res) => {
+
+    try {
+        const query = req.query
+
+        const searchQuery = {
+            address: "\'%" + query?.loc + "%\'",
+            category: "\'%" + query?.cat + "%\'",
+            partner: "\'%" + query?.part + "%\'"
+        }
+        // TODO: Partner Query
+        const adventure = await db.query(`SELECT * FROM ADVENTURES WHERE ADDRESS ILIKE ${searchQuery.address} OR TYPE ILIKE ${searchQuery.category}`)
+
+        if (adventure.rowCount) {
+            res.status(200).json({
+                data: adventure.rows,
+                status: true
+            })
+        }
+        else {
+            res.status(404).json({
+                msg: 'not found',
+                status: false
+            })
+        }
+
+    } catch (error) {
+
+        res.status(400).json({
+            error: error,
+            status: false,
+            msg: "No Adventures Found! Search Failed!"
         })
     }
 
