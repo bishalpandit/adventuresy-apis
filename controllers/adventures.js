@@ -99,15 +99,17 @@ export const getAdventuresByCategory = async (req, res) => {
 
         const queryArr = query.split(',')
 
-        for(let i=0; i<queryArr.length; i++) {
-            categories += "\'" +  queryArr[i] + "\'"
-            if(i != queryArr.length-1)
+        for (let i = 0; i < queryArr.length; i++) {
+            categories += "\'" + queryArr[i] + "\'"
+            if (i != queryArr.length - 1)
                 categories += ", "
         }
 
         categories += ')'
 
-        const adventure = await db.query(`SELECT * FROM ADVENTURES WHERE type IN ${categories}`)
+        const adventure = await db.query(`SELECT * 
+        FROM ADVENTURES 
+        WHERE type IN ${categories}`)
 
         if (adventure.rowCount) {
             res.status(200).json({
@@ -143,7 +145,10 @@ export const getAdventuresBySearch = async (req, res) => {
             partner: "\'%" + query?.part + "%\'"
         }
         // TODO: Partner Query
-        const adventure = await db.query(`SELECT * FROM ADVENTURES WHERE ADDRESS ILIKE ${searchQuery.address} OR TYPE ILIKE ${searchQuery.category}`)
+        const adventure = await db.query(`SELECT * 
+        FROM ADVENTURES 
+        WHERE ADDRESS ILIKE ${searchQuery.address} 
+        OR TYPE ILIKE ${searchQuery.category}`)
 
         if (adventure.rowCount) {
             res.status(200).json({
@@ -167,4 +172,79 @@ export const getAdventuresBySearch = async (req, res) => {
         })
     }
 
+}
+
+export const getAvailableDates = async (req, res) => {
+
+    try {
+        const partnerId = req.params.pid
+        const adventureId = req.params.aid
+
+        const availDates = await db.query(`SELECT AVAIL_DATES
+         FROM BOOKINGAVAILABILITY BA
+         JOIN PARTNERS P ON BA.partner_id = P.id
+         JOIN ADVENTURES A ON BA.adventure_id = A.id
+         WHERE BA.partner_id = ${"\'" + partnerId + "\'"} AND BA.adventure_id = ${"\'" + adventureId + "\'"}`)
+
+        if (availDates.rowCount) {
+            res.status(200).json({
+                data: availDates.rows[0]?.avail_dates,
+                status: true
+            })
+        }
+        else {
+            res.status(404).json({
+                msg: 'not found',
+                status: false
+            })
+        }
+
+    } catch (error) {
+
+        res.status(400).json({
+            error: error,
+            status: false,
+            msg: "No dates found! Something went wrong!"
+        })
+    }
+
+}
+
+export const getAdventuresByFilter = async (req, res) => {
+
+    try {
+        const query = req.query
+        const nargs = Object.keys(query).length
+        // maxprice, minprice, 
+        const filterQuery = Object.entries(query)
+            .map((item) => `${item[0]} = ${(typeof (item[1]) == 'string') ? `'${item[1]}'` : Number(item[1])}`)
+            .reduce((prev, cur, idx) => {
+                if (idx == nargs - 1)
+                    return prev + cur
+                else
+                    return prev + cur + ' AND '
+            }, "")
+
+        const adventures = await db.query(`SELECT * FROM ADVENTURES WHERE ${filterQuery}`)
+
+        if (adventures.rowCount) {
+            res.status(200).json({
+                data: adventures.rows,
+                status: true
+            })
+        }
+        else {
+            res.status(404).json({
+                msg: 'not found',
+                status: false
+            })
+        }
+
+    } catch (error) {
+
+        res.status(400).json({
+            error: error,
+            status: false
+        })
+    }
 }

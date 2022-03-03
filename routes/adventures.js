@@ -1,12 +1,12 @@
 import { Router } from 'express'
-import { getAdventures, getAdventureById, getAdventuresByCategory, getAdventuresBySearch } from '../controllers/adventures.js'
+import { getAdventures, getAdventureById, getAdventuresByCategory, getAdventuresBySearch, getAvailableDates, getAdventuresByFilter } from '../controllers/adventures.js'
 const router = Router()
 
 // api/adventures?ctype=popular&limit=5
 router.get('/', getAdventures)
 
 // api/adventures/:id
-router.get('/a/:id', getAdventureById)
+router.get('/adv/:id', getAdventureById)
 
 // api/adventures/category?c1=skiing%20scuba%20surfing
 router.get('/category', getAdventuresByCategory)
@@ -15,10 +15,13 @@ router.get('/category', getAdventuresByCategory)
 router.get('/search', getAdventuresBySearch)
 
 // api/adventures/filter?
-// router.get('/filter', getAdventureByFilter)
+router.get('/filter', getAdventuresByFilter)
 
 // api/adventures/geoloc
 // router.get('/geoloc', getAdventureByGeoLoc)
+
+// api/adventures/avail/3jif3f93asf/?date? | for march month -> send the month year and get the available dates...
+router.get('/avail/part/:pid/adv/:aid/date', getAvailableDates)
 
 export default router;
 
