@@ -215,17 +215,36 @@ export const getAdventuresByFilter = async (req, res) => {
     try {
         const query = req.query
         const nargs = Object.keys(query).length
-        // maxprice, minprice, 
-        const filterQuery = Object.entries(query)
-            .map((item) => `${item[0]} = ${(typeof (item[1]) == 'string') ? `'${item[1]}'` : Number(item[1])}`)
-            .reduce((prev, cur, idx) => {
-                if (idx == nargs - 1)
-                    return prev + cur
-                else
-                    return prev + cur + ' AND '
-            }, "")
 
-        const adventures = await db.query(`SELECT * FROM ADVENTURES WHERE ${filterQuery}`)
+        console.log(query);
+
+        const getOp = (queryItem) => {
+            switch (queryItem) {
+                case 'maxprice': return '<='
+                case 'minprice': return '>='
+                case 'type': return '='
+                case 'address': return 'ILIKE'
+                case 'pname': return 'ILIKE'
+                default: return '='
+            }
+        }
+
+        const filterQuery = Object.entries(query)
+                .map((item) => `${(item[0] == 'maxprice' || item[0] == 'minprice') ? 'price' : item[0]}  ${getOp(item[0] + "")}
+                ${(typeof (item[1]) == 'string') ? `'${(item[0] == 'address') ? ('%' + item[1] + '%') : item[1]}'` : Number(item[1])}`)
+                .reduce((prev, cur, idx) => {
+                    if (idx == nargs - 1)
+                        return prev + cur
+                    else
+                        return prev + cur + ' AND '
+                }, "")
+
+        const dbQuery = `SELECT * from adventureprices ap 
+        JOIN partneradventurelink pal ON pal.id = ap.partneradventurelink_id
+        JOIN partners p ON pal.partner_id = p.id
+        JOIN adventures a ON pal.adventure_id = a.id where ${filterQuery}`
+
+        const adventures = await db.query(dbQuery);
 
         if (adventures.rowCount) {
             res.status(200).json({
@@ -235,7 +254,7 @@ export const getAdventuresByFilter = async (req, res) => {
         }
         else {
             res.status(404).json({
-                msg: 'not found',
+                msg: 'nothing found',
                 status: false
             })
         }
