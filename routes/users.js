@@ -13,7 +13,7 @@ router.route('/signin').post(loginUser)
 router.route('/signin/google')
     .get(passport.authenticate('google', {
         scope:
-            ['profile']
+            ['email','profile']
     }
     ))
 

@@ -17,17 +17,17 @@ passport.deserializeUser(function (user, done) {
 passport.use(new passoauth.Strategy({
     clientID: "325007616534-ght87o5v9gfpmcc4b8cla8pd2cq7ilk0.apps.googleusercontent.com",
     clientSecret: "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",
-    callbackURL: "http://localhost:5000/users/oauth/redirect/google",
+    callbackURL: "http://localhost:5000/api/users/oauth/redirect/google",
     passReqToCallback: true,
 },
     async (request, accessToken, refreshToken, profile, done) => {
 
-        const userExists = await db.query('SELECT ID FROM USERS WHERE EMAIL_ID = $1', [profile.id])
-    
+        const userExists = await db.query('SELECT ID FROM USERS WHERE googleID = $1', [profile.id])
+        //console.log(profile);
         const newUser = {
             f_name: profile.name.givenName,
             l_name: profile.name.familyName,
-            email: profile.emails[0].value,
+            email: profile?.emails[0].value,
             hashedPassword: 'GoogleID',
             mobile: ''
         }
