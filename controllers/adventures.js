@@ -63,9 +63,16 @@ export const getAdventures = async (req, res) => {
 export const getAdventureById = async (req, res) => {
 
     try {
-        const ID = req.params.id;
+        const adventureID = req.params.id;
+        const partnerID = req.query;
+        let adventure
 
-        const adventure = await db.query('SELECT * FROM ADVENTURES WHERE ID = $1', [ID])
+        if (partnerID) {
+            adventure = await db.query('SELECT * FROM PARTNERADVENTURELINK WHERE PARTNER_ID = $1', [partnerID])
+        }
+        else {
+            adventure = await db.query('SELECT * FROM ADVENTURES WHERE ID = $1', [adventureID])
+        }
 
         if (adventure.rowCount) {
             res.status(200).json({
@@ -230,14 +237,14 @@ export const getAdventuresByFilter = async (req, res) => {
         }
 
         const filterQuery = Object.entries(query)
-                .map((item) => `${(item[0] == 'maxprice' || item[0] == 'minprice') ? 'price' : item[0]}  ${getOp(item[0] + "")}
+            .map((item) => `${(item[0] == 'maxprice' || item[0] == 'minprice') ? 'price' : item[0]}  ${getOp(item[0] + "")}
                 ${(typeof (item[1]) == 'string') ? `'${(item[0] == 'address') ? ('%' + item[1] + '%') : item[1]}'` : Number(item[1])}`)
-                .reduce((prev, cur, idx) => {
-                    if (idx == nargs - 1)
-                        return prev + cur
-                    else
-                        return prev + cur + ' AND '
-                }, "")
+            .reduce((prev, cur, idx) => {
+                if (idx == nargs - 1)
+                    return prev + cur
+                else
+                    return prev + cur + ' AND '
+            }, "")
 
         const dbQuery = `SELECT * from adventureprices ap 
         JOIN partneradventurelink pal ON pal.id = ap.partneradventurelink_id
@@ -267,3 +274,8 @@ export const getAdventuresByFilter = async (req, res) => {
         })
     }
 }
+
+/*
+
+adventures -> name, img, price-range, partners[0,1,2], location
+*/
