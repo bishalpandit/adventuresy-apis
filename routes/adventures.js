@@ -8,7 +8,7 @@ router.get('/', getAdventures)
 // api/adventures/:id
 router.get('/adv/:id', getAdventureById)
 
-// api/adventures/category?c1=skiing%20scuba%20surfing
+// api/adventures/category?categ=skiing%20scuba%20surfing
 router.get('/category', getAdventuresByCategory)
 
 // api/adventures/search?loc=india&cat=skiing&part=triogo
@@ -21,7 +21,7 @@ router.get('/filter', getAdventuresByFilter)
 // router.get('/geoloc', getAdventureByGeoLoc)
 
 // api/adventures/avail/3jif3f93asf/?date? | for march month -> send the month year and get the available dates...
-router.get('/avail/part/:pid/adv/:aid/date', getAvailableDates)
+router.get('/availdates/:pid/:aid', getAvailableDates)
 
 export default router;
 

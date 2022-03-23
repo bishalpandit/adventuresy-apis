@@ -4,7 +4,7 @@ export const getAdventures = async (req, res) => {
 
     const query = req.query
     console.log(query);
-    const { ctype, limit } = query
+    const { ctype, limit } = query // ctype -> Collection type
 
     let adventures;
 
@@ -12,34 +12,32 @@ export const getAdventures = async (req, res) => {
 
         if (ctype) {
             const selectQuery = {
-                popular: 'SELECT A.title, A.type, A.summary, A.price FROM ADVENTURES A JOIN RESERVATIONS R ON A.id = R.adventure_id GROUP BY A.id ORDER BY COUNT(*) DESC LIMIT 5'
+                popular: 'SELECT A.title, A.type, A.summary FROM ADVENTURES A JOIN RESERVATIONS R ON A.id = R.adventure_id GROUP BY A.id ORDER BY COUNT(*) DESC LIMIT 5',
+                recent: 'SELECT title, type, summary FROM ADVENTURES ORDER BY created_at DESC LIMIT 5',
             }
 
             switch (ctype) {
-                // max reservations
-
                 case 'popular':
                     adventures = await db.query(selectQuery.popular)
                     break
-                // most booked last 2 months
                 case 'trending':
                     break
-                // recently added
                 case 'recent':
+                    adventures = await db.query(selectQuery.recent)
                     break
-                // high ratings
                 case 'recommended':
+                    // to be implmeneted using matrix fac. or ml inference
                     break
                 default:
             }
         }
 
         else {
-            // get all...
+            // Get All either w/ limit or w/o
             if (limit)
-                adventures = await db.query(`SELECT title, type, summary, price FROM ADVENTURES LIMIT ${limit}`)
+                adventures = await db.query(`SELECT title, type, summary FROM ADVENTURES LIMIT ${limit}`)
             else
-                adventures = await db.query('SELECT title, type, summary, price FROM ADVENTURES')
+                adventures = await db.query('SELECT title, type, summary FROM ADVENTURES')
         }
 
 
@@ -153,9 +151,15 @@ export const getAdventuresBySearch = async (req, res) => {
         }
         // TODO: Partner Query
         const adventure = await db.query(`SELECT * 
-        FROM ADVENTURES 
-        WHERE ADDRESS ILIKE ${searchQuery.address} 
-        OR TYPE ILIKE ${searchQuery.category}`)
+        FROM ADVENTURES A
+        JOIN PARTNERADVENTURELINK PAL
+        ON A.id = PAL.adventure_id
+        JOIN PARTNERS P
+        ON PAL.partner_id = P.id
+        WHERE A.address ILIKE ${searchQuery.address} 
+        OR A.type ILIKE ${searchQuery.category}
+        OR P.pname ILIKE ${searchQuery.partner}
+        `)
 
         if (adventure.rowCount) {
             res.status(200).json({
@@ -189,9 +193,13 @@ export const getAvailableDates = async (req, res) => {
 
         const availDates = await db.query(`SELECT AVAIL_DATES
          FROM BOOKINGAVAILABILITY BA
-         JOIN PARTNERS P ON BA.partner_id = P.id
-         JOIN ADVENTURES A ON BA.adventure_id = A.id
-         WHERE BA.partner_id = ${"\'" + partnerId + "\'"} AND BA.adventure_id = ${"\'" + adventureId + "\'"}`)
+         JOIN PARTNERADVENTURELINK PAL ON BA.partneradventurelink_id = PAL.id
+         WHERE BA.partneradventurelink_id = 
+         (SELECT id FROM PARTNERADVENTURELINK
+         WHERE partner_id = ${"\'" + partnerId + "\'"} 
+         AND adventure_id = ${"\'" + adventureId + "\'"}
+         )
+        `)
 
         if (availDates.rowCount) {
             res.status(200).json({

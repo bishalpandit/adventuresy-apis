@@ -15,8 +15,8 @@ passport.deserializeUser(function (user, done) {
 
 
 passport.use(new passoauth.Strategy({
-    clientID: "325007616534-ght87o5v9gfpmcc4b8cla8pd2cq7ilk0.apps.googleusercontent.com",
-    clientSecret: "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",
+    clientID: `${process.env.GOOGLE_CLIENT_ID}`,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: "http://localhost:5000/api/users/oauth/redirect/google",
     passReqToCallback: true,
 },
