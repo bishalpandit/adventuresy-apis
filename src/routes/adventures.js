@@ -2,6 +2,8 @@ import { Router } from 'express'
 import { getAdventures, getAdventureById, getAdventuresByCategory, getAdventuresBySearch, getAvailableDates, getAdventuresByFilter } from '../controllers/adventures.js'
 const router = Router()
 
+// Type -> Adventure, Sport, Event, Concert, Animal Safari
+
 // api/adventures?ctype=popular&limit=5
 router.get('/', getAdventures)
 
