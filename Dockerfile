@@ -1,4 +1,4 @@
-FROM node:16
+FROM mhart/alpine-node:6.17
 
 COPY package.json .
 
@@ -6,6 +6,6 @@ RUN npm install
 
 COPY . .
 
-EXPOSE 3000
+EXPOSE 5000
 
 CMD ["npm", "run", "start"]

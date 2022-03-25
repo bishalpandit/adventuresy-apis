@@ -9,6 +9,10 @@ const config = {
     ssl: true,
 }
 
-const db = new pg.Pool(config)
+const connURI = process.env.PGURI
+
+const db = new pg.Pool({
+    connURI,
+})
 
 export default db;
