@@ -1,7 +1,5 @@
 import db from '../configs/db.js'
 import bcrypt from 'bcrypt'
-import { row } from 'mathjs';
-
 
 
 export const getUserByID = async (req, res) => {

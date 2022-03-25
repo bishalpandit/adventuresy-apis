@@ -1,4 +1,4 @@
-FROM mhart/alpine-node:6.17
+FROM node:16.3.0-alpine
 
 COPY package.json .
 
