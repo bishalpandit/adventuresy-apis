@@ -12,8 +12,8 @@ export const getAdventures = async (req, res) => {
 
         if (ctype) {
             const selectQuery = {
-                popular: 'SELECT A.title, A.type, A.summary FROM ADVENTURES A JOIN RESERVATIONS R ON A.id = R.adventure_id GROUP BY A.id ORDER BY COUNT(*) DESC LIMIT 5',
-                recent: 'SELECT title, type, summary FROM ADVENTURES ORDER BY created_at DESC LIMIT 5',
+                popular: 'SELECT A.title, A.type, A.summary, A.img_link FROM ADVENTURES A JOIN RESERVATIONS R ON A.id = R.adventure_id GROUP BY A.id ORDER BY COUNT(*) DESC LIMIT 5',
+                recent: 'SELECT title, type, summary, img_link FROM ADVENTURES ORDER BY created_at DESC LIMIT 5',
             }
 
             switch (ctype) {

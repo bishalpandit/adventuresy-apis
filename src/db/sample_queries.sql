@@ -37,3 +37,9 @@ select * from adventureprices ap
 join partneradventurelink pal on pal.id = ap.partneradventurelink_id
 join partners p on pal.partner_id = p.id
 join adventures a on pal.adventure_id = a.id;
+
+update Adventures
+set img_link = 'paragliding.jpg'
+where title = 'Parasailing in Malaysia';
+
+select title, img_link from adventures;
