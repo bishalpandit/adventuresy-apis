@@ -1,3 +1,5 @@
 /node_modules
-
+/src/.env
 .env
+package-lock.json  
+/src/db/sample_queries.sql
