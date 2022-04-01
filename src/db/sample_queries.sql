@@ -42,4 +42,34 @@ update Adventures
 set img_link = 'paragliding.jpg'
 where title = 'Parasailing in Malaysia';
 
-select title, img_link from adventures;
+
+
+select * from reservations;
+select * from users;
+select * from partneradventurelink;
+
+insert into reservations(user_id, start_date, end_date, persons, price, tax, total, partneradventurelink_id) values('05330f2a-85c5-42ff-8c33-f15e60067fca', '2022-05-01', '2022-05-08', 1, 20000, 400, 20400, '05f1a5dc-bb81-4960-8a0d-6c5151703ce7');
+
+alter table reservations
+ADD CONSTRAINT fk_partneradventurelink FOREIGN key(partneradventurelink_id) REFERENCES partneradventurelink(id);
+
+alter table reviews
+drop COLUMN istripover;
+
+
+select adventure_id, 
+(select title from adventures a where a.id = adventure_id ), 
+(select summary from adventures a where a.id = adventure_id ), 
+(select img_link from adventures a where a.id = adventure_id ) 
+from reviews rev 
+join reservations res
+on rev.reservation_id = res.id 
+join partneradventurelink pa 
+on res.partneradventurelink_id = pa.id 
+join adventures adv
+on pa.adventure_id = adv.id 
+group by adventure_id
+order by avg(rating) desc;
+
+insert into reviews(reservation_id, content, rating)
+values('c267e0ab-a3b9-4170-9233-e83a9b364483', 'Nice experience', 4.2)

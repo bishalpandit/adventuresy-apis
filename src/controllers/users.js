@@ -25,8 +25,20 @@ export const registerUser = async (req, res) => {
             res.status(400).send('User Already Exists!')
         }
 
-        const { f_name, l_name, email, password, mobile } = req.body
+        const { f_name, l_name, email, password, mobile } = req.body;
 
+        const errors = [];
+
+        !f_name & errors.push('First name is required');
+        !l_name & errors.push('Last name is required');
+        !email & errors.push('Email is required');
+        !password & errors.push('Password is required');
+        !mobile & errors.push('Mobile is required');
+
+        if(errors.length > 0) {
+            res.status(400);
+            throw new Error(errors.join(', '));
+        }
         // Hashing the password
         const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -45,8 +57,8 @@ export const registerUser = async (req, res) => {
     }
 
     catch (err) {
-        console.log(err.stack);
-        res.status(400).send(err.stack)
+        console.log(err);
+        res.status(400).send(err);
     }
 }
 

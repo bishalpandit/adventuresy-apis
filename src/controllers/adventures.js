@@ -12,8 +12,31 @@ export const getAdventures = async (req, res) => {
 
         if (ctype) {
             const selectQuery = {
-                popular: 'SELECT A.title, A.type, A.summary, A.img_link FROM ADVENTURES A JOIN RESERVATIONS R ON A.id = R.adventure_id GROUP BY A.id ORDER BY COUNT(*) DESC LIMIT 5',
-                recent: 'SELECT title, type, summary, img_link FROM ADVENTURES ORDER BY created_at DESC LIMIT 5',
+                popular: `SELECT A.title, A.type, A.summary, A.img_link 
+                FROM ADVENTURES A JOIN RESERVATIONS R 
+                ON A.id = R.adventure_id 
+                GROUP BY A.id 
+                ORDER BY COUNT(*) 
+                DESC LIMIT 5;`,
+
+                recent: `SELECT title, type, summary, img_link
+                FROM ADVENTURES 
+                ORDER BY created_at 
+                DESC LIMIT 5;`,
+
+                trending: `SELECT adventure_id, 
+                (SELECT title from adventures a where a.id = adventure_id ), 
+                (SELECT summary from adventures a where a.id = adventure_id ), 
+                (SELECT img_link from adventures a where a.id = adventure_id ) 
+                FROM reviews rev 
+                JOIN reservations res
+                ON rev.reservation_id = res.id 
+                JOIN partneradventurelink pa 
+                ON res.partneradventurelink_id = pa.id 
+                JOIN adventures adv
+                ON pa.adventure_id = adv.id 
+                GROUP BY adventure_id
+                ORDER BY avg(rating) desc;`
             }
 
             switch (ctype) {
@@ -21,6 +44,7 @@ export const getAdventures = async (req, res) => {
                     adventures = await db.query(selectQuery.popular)
                     break
                 case 'trending':
+                    adventures = await db.query(selectQuery.trending)
                     break
                 case 'recent':
                     adventures = await db.query(selectQuery.recent)
@@ -33,7 +57,6 @@ export const getAdventures = async (req, res) => {
         }
 
         else {
-            // Get All either w/ limit or w/o
             if (limit)
                 adventures = await db.query(`SELECT title, type, summary FROM ADVENTURES LIMIT ${limit}`)
             else
@@ -41,7 +64,7 @@ export const getAdventures = async (req, res) => {
         }
 
 
-        res.status(200).json({
+        res.json({
             data: adventures.rows,
             status: true
         })
@@ -149,7 +172,7 @@ export const getAdventuresBySearch = async (req, res) => {
             category: "\'%" + query?.cat + "%\'",
             partner: "\'%" + query?.part + "%\'"
         }
-        // TODO: Partner Query
+    
         const adventure = await db.query(`SELECT * 
         FROM ADVENTURES A
         JOIN PARTNERADVENTURELINK PAL
