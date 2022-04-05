@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { getAdventures, getAdventureById, getAdventuresByCategory, getAdventuresBySearch, getAvailableDates, getAdventuresByFilter } from '../controllers/adventures.js'
+import { getAdventures, getAdventureById, getAdventuresByCategory, getAdventuresBySearch, getAvailableDates, getAdventuresByFilter } from '../controllers/adventure.controllers.js'
 const router = Router()
 
 // Type -> Adventure, Sport, Event, Concert, Animal Safari
@@ -25,7 +25,7 @@ router.get('/filter', getAdventuresByFilter)
 // api/adventures/avail/3jif3f93asf/?date? | for march month -> send the month year and get the available dates...
 router.get('/availdates/:pid/:aid', getAvailableDates)
 
-router.post('/logs', adventureLogs);
+//router.post('/logs', adventureLogs);
 
 export default router;
 
