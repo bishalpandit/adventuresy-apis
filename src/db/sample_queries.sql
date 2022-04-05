@@ -78,6 +78,7 @@ where id = '71b455d1-d6f2-49b8-8778-af7d14ce296a';
 delete from reviews
 where id = 'b8c122ae-7e8d-4edc-90f7-12632a17db81';
 
+select * from reservations;
 
 insert into reviews(reservation_id, content, rating)
 values('4042f6c3-6418-4d6a-9912-f03441b3f3cc', 'It was really fun but scary also.', 3.5);

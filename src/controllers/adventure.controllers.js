@@ -13,8 +13,11 @@ export const getAdventures = async (req, res) => {
         if (ctype) {
             const selectQuery = {
                 popular: `SELECT A.title, A.type, A.summary, A.img_link 
-                FROM ADVENTURES A JOIN RESERVATIONS R 
-                ON A.id = R.adventure_id 
+                FROM ADVENTURES a
+                JOIN partneradventurelink pa
+                ON A.id = pa.adventure_id
+                JOIN reservations r
+                ON r.partneradventurelink_id = pa.id
                 GROUP BY A.id 
                 ORDER BY COUNT(*) 
                 DESC LIMIT 5;`,

@@ -1,6 +1,6 @@
 import db from "../configs/db.js";
 
-export const getAdventures = async (req, res) => {
+export const createReview = async (req, res) => {
 
     try {
         let { reservation_id, content, rating, istripover, image_links } = req.body;

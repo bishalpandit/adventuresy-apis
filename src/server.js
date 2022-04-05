@@ -7,8 +7,10 @@ import cors from 'cors'
 import cookieSession from 'cookie-session'
 import './auth/passport.js'
 
-import userRoutes from './routes/users.js'
-import adventureRoutes from './routes/adventures.js'
+import userRoutes from './routes/user.routes.js'
+import adventureRoutes from './routes/adventure.routes.js'
+import reviewRoutes from './routes/review.routes.js'
+import reservationRoutes from './routes/reservation.routes.js'
 
 const app = express()
 
@@ -43,6 +45,8 @@ db.connect((err) => {
 // Routes
 app.use('/api/users', userRoutes)
 app.use('/api/adventures', adventureRoutes)
+app.use('/api/reservation', reservationRoutes)
+app.use('/api/review', reviewRoutes)
 
 //Test Route
 app.get('/', (req, res, ) => {
