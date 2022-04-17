@@ -11,12 +11,14 @@ import userRoutes from './routes/user.routes.js'
 import adventureRoutes from './routes/adventure.routes.js'
 import reviewRoutes from './routes/review.routes.js'
 import reservationRoutes from './routes/reservation.routes.js'
+import streamRoutes from './routes/stream.routes.js'
 
 const app = express()
 
 // Configs
 dotenv.config()
 app.use(express.json())
+app.use(express.static("public"));
 
 //CORS
 app.use(cors({
@@ -47,6 +49,7 @@ app.use('/api/users', userRoutes)
 app.use('/api/adventures', adventureRoutes)
 app.use('/api/reservation', reservationRoutes)
 app.use('/api/review', reviewRoutes)
+app.use('/api/stream', streamRoutes)
 
 //Test Route
 app.get('/', (req, res, ) => {
