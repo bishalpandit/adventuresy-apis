@@ -5,7 +5,7 @@ const streamSplashVideo = (req, res) => {
 
     try {
         const __dirname = path.resolve();
-        const pathi = path.join(__dirname, '../src/assets/Adventuresy_Splash.mp4');
+        const pathi = path.join(__dirname, '../src/assets/Adventuresy_Splash.webm');
         const stat = fs.statSync(pathi)
         const fileSize = stat.size
         const range = req.headers.range;
@@ -25,7 +25,7 @@ const streamSplashVideo = (req, res) => {
                 'Content-Range': `bytes ${start}-${end}/${fileSize}`,
                 'Accept-Ranges': 'bytes',
                 'Content-Length': chunksize,
-                'Content-Type': 'video/mp4',
+                'Content-Type': 'video/webm',
             }
 
             res.writeHead(206, head)
@@ -35,7 +35,7 @@ const streamSplashVideo = (req, res) => {
         else {
             const head = {
                 'Content-Length': fileSize,
-                'Content-Type': 'video/mp4',
+                'Content-Type': 'video/webm',
             }
             res.writeHead(200, head)
             fs.createReadStream(pathi).pipe(res)
