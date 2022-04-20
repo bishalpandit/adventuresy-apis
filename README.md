@@ -1,2 +1,2 @@
-# adventuresy_apis
+# adventuresy-apis
 Backend for Adventuresy App
