@@ -4,6 +4,8 @@ import dotenv from 'dotenv'
 import chalk from 'chalk'
 import passport from 'passport'
 import cors from 'cors'
+import helmet from 'helmet'
+import morgan from 'morgan'
 import cookieSession from 'cookie-session'
 import './auth/passport.js'
 
@@ -16,14 +18,18 @@ import streamRoutes from './routes/stream.routes.js'
 const app = express()
 
 // Configs
-dotenv.config()
+dotenv.config();
+
+app.use(morgan("dev"));
+app.use(helmet());
 app.use(express.json())
 app.use(express.static("public"));
 
 //CORS
 app.use(cors({
-    origin: '*'
-}))
+    credentials: true,
+    origin: '*',
+  }))
 
 // Google Authentication Middlewares
 app.use(cookieSession({

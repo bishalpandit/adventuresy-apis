@@ -1,6 +1,10 @@
 import { Router } from 'express'
 import { createReview } from '../controllers/review.controllers.js'
+import protect from '../middlewares/authMiddleware.js'
+
 const router = Router();
+
+router.use(protect);
 
 //router.get('/:adventureid', getReviewsByAdventure);
 

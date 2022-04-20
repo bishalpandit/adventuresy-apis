@@ -1,8 +1,11 @@
 import { Router } from 'express'
 import { getAdventures, getAdventureById, getAdventuresByCategory, getAdventuresBySearch, getAvailableDates, getAdventuresByFilter } from '../controllers/adventure.controllers.js'
+import protect from '../middlewares/authMiddleware.js'
 const router = Router()
 
-// Type -> Adventure, Sport, Event, Concert, Animal Safari
+// Type -> Adventure, Sport, Event, Concert, Animal 
+
+router.use(protect);
 
 // api/adventures?ctype=popular&limit=5
 router.get('/', getAdventures)

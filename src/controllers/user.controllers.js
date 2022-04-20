@@ -1,5 +1,6 @@
 import db from '../configs/db.js'
 import bcrypt from 'bcrypt'
+import generateToken from '../library/utils/generateToken.js';
 
 
 export const getUserByID = async (req, res) => {
@@ -46,10 +47,13 @@ export const registerUser = async (req, res) => {
             text: 'INSERT INTO users(first_name, last_name, email_id, password, mobile) VALUES($1, $2, $3, $4, $5)',
             values: [f_name, l_name, email, hashedPassword, mobile],
         }
-        const userRecord = await db.query(Insertquery)
+        const user = await db.query(Insertquery)
 
-        if (userRecord) {
-            res.status(201).json(userRecord)
+        if (user) {
+            res.status(201).json({
+                ...user,
+                token: generateToken(user)
+            })
         }
         else {
             res.status(400).send('Something went wrong!')
