@@ -27,8 +27,7 @@ app.use(express.static("public"));
 
 //CORS
 app.use(cors({
-    credentials: true,
-    origin: '*',
+    origin: '*'
   }))
 
 // Google Authentication Middlewares
