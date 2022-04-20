@@ -20,15 +20,15 @@ const app = express()
 // Configs
 dotenv.config();
 
-app.use(morgan("dev"));
-app.use(helmet());
-app.use(express.json())
-app.use(express.static("public"));
+//app.use(morgan("dev"));
+//app.use(helmet());
+app.use(express.json());
 
 //CORS
 app.use(cors({
     origin: '*'
-  }))
+}))
+
 
 // Google Authentication Middlewares
 app.use(cookieSession({
@@ -57,7 +57,7 @@ app.use('/api/review', reviewRoutes)
 app.use('/api/stream', streamRoutes)
 
 //Test Route
-app.get('/', (req, res, ) => {
+app.get('/', (req, res,) => {
     res.json('Adventuresy API running...')
 })
 
