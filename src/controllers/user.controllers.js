@@ -77,13 +77,12 @@ export const loginUser = async (req, res) => {
 
     try {
         const userExists = await db.query('SELECT ID FROM USERS WHERE EMAIL_ID = $1', [req.body.email])
-        console.log(req);
         if (!userExists.rowCount) {
             res.status(400).send('User Doesn\'t Exist. Sign Up!')
         } 
         
         const userQuery = {
-            text: 'SELECT first_name, last_name, email_id, mobile FROM USERS WHERE EMAIL_ID = $1',
+            text: 'SELECT * FROM USERS WHERE EMAIL_ID = $1',
             values: [req.body.email]
         } 
 
@@ -94,6 +93,7 @@ export const loginUser = async (req, res) => {
         const match = await bcrypt.compare(req.body.password, user.rows[0].password)
 
         if(match) {
+            delete user.rows[0].password;
             res.status(200).json({
                 ...user.rows[0],
                 token: generateToken(user)
