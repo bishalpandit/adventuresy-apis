@@ -47,11 +47,18 @@ export const registerUser = async (req, res) => {
             text: 'INSERT INTO users(first_name, last_name, email_id, password, mobile) VALUES($1, $2, $3, $4, $5)',
             values: [f_name, l_name, email, hashedPassword, mobile],
         }
-        const user = await db.query(Insertquery)
+        await db.query(Insertquery);
+
+        userQuery = {
+            text: 'SELECT first_name, last_name, email_id, mobile FROM USERS WHERE EMAIL_ID = $1',
+            values: [req.body.email]
+        } 
+
+        const user = await db.query(userQuery);
 
         if (user) {
             res.status(201).json({
-                ...user,
+                ...user.rows[0],
                 token: generateToken(user)
             })
         }
@@ -76,19 +83,19 @@ export const loginUser = async (req, res) => {
         } 
         
         const userQuery = {
-            text: 'SELECT * FROM USERS WHERE EMAIL_ID = $1',
+            text: 'SELECT first_name, last_name, email_id, mobile FROM USERS WHERE EMAIL_ID = $1',
             values: [req.body.email]
         } 
 
-        const userRecord = await db.query(userQuery)
+        const user = await db.query(userQuery);
 
         //Matching entered and stored passwords
-        //console.log(userRecord.rows[0].password);
-        const match = await bcrypt.compare(req.body.password, userRecord.rows[0].password)
+        //console.log(user.rows[0].password);
+        const match = await bcrypt.compare(req.body.password, user.rows[0].password)
 
         if(match) {
             res.status(200).json({
-                ...userRecord.rows[0],
+                ...user.rows[0],
                 token: generateToken(user)
             })
         }
