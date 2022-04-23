@@ -89,7 +89,7 @@ export const loginUser = async (req, res) => {
         if(match) {
             res.status(200).json({
                 ...userRecord.rows[0],
-                token: 'heyimtoken'
+                token: generateToken(user)
             })
         }
         else {
