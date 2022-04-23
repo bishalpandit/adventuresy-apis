@@ -3,7 +3,7 @@ import passport from 'passport'
 import { getUserByID, registerUser, loginUser, updateUser } from '../controllers/user.controllers.js'
 import protect from '../middlewares/authMiddleware.js'
 
-const router = Router()
+const router = Router();
 
 router.route('/signup').post(registerUser)
 
@@ -24,7 +24,7 @@ router.get('/oauth/redirect/google',
 );
 
 
-router.route('/:id').get(protect, getUserByID)
+router.route('/details/:id').get(protect, getUserByID)
 
 router.route('/update/:id').put(protect, updateUser)
 
