@@ -30,11 +30,11 @@ export const registerUser = async (req, res) => {
 
         const errors = [];
 
-        !f_name & errors.push('First name is required');
-        !l_name & errors.push('Last name is required');
-        !email & errors.push('Email is required');
-        !password & errors.push('Password is required');
-        !mobile & errors.push('Mobile is required');
+        !f_name && errors.push('First name is required');
+        !l_name && errors.push('Last name is required');
+        !email && errors.push('Email is required');
+        !password && errors.push('Password is required');
+        !mobile && errors.push('Mobile is required');
 
         if(errors.length > 0) {
             res.status(400);
