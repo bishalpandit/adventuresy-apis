@@ -6,8 +6,8 @@ import generateToken from '../library/utils/generateToken.js';
 export const getUserByID = async (req, res) => {
 
     try {
-        const users = await db.query('SELECT * FROM USERS WHERE ID = $1', [req.params.id])
-        res.status(200).json(users?.rows);
+        const users = await db.query('SELECT first_name, last_name, email_id, mobile FROM USERS WHERE ID = $1', [req.params.id])
+        res.status(200).json(users.rows[0]);
     }
 
     catch (err) {
@@ -49,7 +49,7 @@ export const registerUser = async (req, res) => {
         }
         await db.query(Insertquery);
 
-        userQuery = {
+        const userQuery = {
             text: 'SELECT first_name, last_name, email_id, mobile FROM USERS WHERE EMAIL_ID = $1',
             values: [req.body.email]
         } 
