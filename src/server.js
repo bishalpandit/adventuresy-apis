@@ -1,34 +1,20 @@
-import db from './configs/db.js'
 import express from 'express'
 import dotenv from 'dotenv'
+import http from 'http'
 import chalk from 'chalk'
 import passport from 'passport'
 import cors from 'cors'
-import helmet from 'helmet'
-import morgan from 'morgan'
 import cookieSession from 'cookie-session'
 import './auth/passport.js'
+import { connectDB, PORT } from './configs/index.js'
+import apiRoutes from './routes/index.js'
+import createSockerServer from './services/socket/socketServer.js'
 
-import userRoutes from './routes/user.routes.js'
-import adventureRoutes from './routes/adventure.routes.js'
-import reviewRoutes from './routes/review.routes.js'
-import reservationRoutes from './routes/reservation.routes.js'
-import streamRoutes from './routes/stream.routes.js'
 
-const app = express()
+const app = express();
+const httpServer = new http.Server(app);
 
-// Configs
 dotenv.config();
-
-//app.use(morgan("dev"));
-//app.use(helmet());
-app.use(express.json());
-
-//CORS
-app.use(cors({
-    origin: '*'
-}))
-
 
 // Google Authentication Middlewares
 app.use(cookieSession({
@@ -39,31 +25,27 @@ app.use(cookieSession({
 app.use(passport.initialize());
 app.use(passport.session());
 
+createSockerServer(httpServer);
 
-//Connect to Postgres DB
-db.connect((err) => {
-    if (err)
-        console.log(err);
-    else
-        console.log(chalk.yellowBright('Connected to PostgreSQL'));
-})
+app.use(express.json());
 
+//CORS
+app.use(cors({
+    origin: '*'
+}))
 
-// Routes
-app.use('/api/users', userRoutes)
-app.use('/api/adventures', adventureRoutes)
-app.use('/api/reservation', reservationRoutes)
-app.use('/api/review', reviewRoutes)
-app.use('/api/stream', streamRoutes)
+//Connect to DB
+connectDB();
+
+app.use('/api', apiRoutes);
 
 //Test Route
 app.get('/', (req, res,) => {
     res.json('Adventuresy API running...')
 })
 
-const PORT = process.env.PORT || 80
 
-
-app.listen(PORT, () => {
+httpServer.listen(PORT, () => {
     console.log(chalk.blueBright(`Server running on PORT ${PORT}`));
 })
+

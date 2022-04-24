@@ -1,4 +1,4 @@
-import db from '../configs/db.js'
+import { db } from '../configs/index.js'
 import bcrypt from 'bcrypt'
 import generateToken from '../library/utils/generateToken.js';
 
@@ -57,9 +57,11 @@ export const registerUser = async (req, res) => {
         const user = await db.query(userQuery);
 
         if (user) {
+            const token = generateToken(user);
+            res.cookie('jwt', token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7 });
+
             res.status(201).json({
                 ...user.rows[0],
-                token: generateToken(user)
             })
         }
         else {
@@ -88,15 +90,15 @@ export const loginUser = async (req, res) => {
 
         const user = await db.query(userQuery);
 
-        //Matching entered and stored passwords
-        //console.log(user.rows[0].password);
         const match = await bcrypt.compare(req.body.password, user.rows[0].password)
 
         if(match) {
-            delete user.rows[0].password;
-            res.status(200).json({
-                ...user.rows[0],
-                token: generateToken(user)
+            const token = generateToken(user);
+            res.cookie('jwt', token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7 });
+
+            res.status(200)
+            .json({
+                ...user.rows[0]
             })
         }
         else {

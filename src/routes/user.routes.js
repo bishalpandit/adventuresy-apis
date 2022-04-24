@@ -2,6 +2,7 @@ import { Router } from 'express'
 import passport from 'passport'
 import { getUserByID, registerUser, loginUser, updateUser } from '../controllers/user.controllers.js'
 import protect from '../middlewares/authMiddleware.js'
+import { CLIENT_URL } from '../configs/index.js'
 
 const router = Router();
 
@@ -18,10 +19,17 @@ router.route('/signin/google')
 
 router.get('/oauth/redirect/google',
     passport.authenticate('google', {
-        failureRedirect: '/failure',
-        successRedirect: '/'
+        successRedirect: `${CLIENT_URL}/`,
+        failureRedirect: '/login/failed',
     })
 );
+
+router.get("/auth/logout", (req, res) => {
+    if (req.user) {
+        req.logout();
+        res.send("done");
+    }
+})
 
 
 router.route('/details/:id').get(protect, getUserByID)

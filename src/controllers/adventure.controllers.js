@@ -1,4 +1,4 @@
-import db from "../configs/db.js";
+import { db } from "../configs/index.js";
 
 export const getAdventures = async (req, res) => {
 
