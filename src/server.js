@@ -18,7 +18,7 @@ const httpServer = new http.Server(app);
 dotenv.config();
 
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: ['http://localhost:3000', 'https://adventuresy.vercel.app', 'https://adventuresy-bishalpandit.vercel.app'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     credentials: true,
 }))
