@@ -78,8 +78,7 @@ export const jwtLogin = async (req, res) => {
 
         if (match) {
             const token = generateToken(user.rows[0]);
-            res.cookie('jwt', token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7 });
-
+            res.cookie('jwt', token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7,});
             res.status(200)
                 .json({
                     success: true
