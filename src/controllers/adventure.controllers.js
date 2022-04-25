@@ -2,8 +2,7 @@ import { db } from "../configs/index.js";
 
 export const getAdventures = async (req, res) => {
 
-    const query = req.query
-    console.log(query);
+    const query = req.query;
     const { ctype, limit } = query // ctype -> Collection type
 
     let adventures;
@@ -124,7 +123,7 @@ export const getAdventureById = async (req, res) => {
 export const getAdventuresByCategory = async (req, res) => {
 
     try {
-        const query = req.query.c1;
+        const query = req.query.cat;
 
         let categories = '('
 

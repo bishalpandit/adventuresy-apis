@@ -16,13 +16,14 @@ passport.deserializeUser(function (user, done) {
 passport.use(new passoauth.Strategy({
     clientID: `${process.env.GOOGLE_CLIENT_ID}`,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "/api/users/oauth/redirect/google",
+    callbackURL: "http://localhost:5000/api/auth/oauth/redirect/google",
     passReqToCallback: true,
 },
     async (request, accessToken, refreshToken, profile, done) => {
 
         try {
-            const userExists = await db.query('SELECT ID FROM USERS WHERE googleID = $1', [profile.id])
+            const userExists = await db.query('SELECT * FROM USERS WHERE googleID = $1', [profile.id]);
+            delete userExists['password'];
 
             if (!userExists.rowCount) {
                 const newUser = {
@@ -38,10 +39,10 @@ passport.use(new passoauth.Strategy({
                     values: [profile.id, newUser.f_name, newUser.l_name, newUser.email, newUser.hashedPassword],
                 }
 
-                const userRecord = await db.query(Insertquery);
-                return done(null, userRecord);
+                const user = await db.query(Insertquery);
+                return done(null, user.rows[0]);
             }
-            return done(null, userExists);
+            return done(null, userExists.rows[0]);
         } catch (error) {
             return done(error, null);
         }

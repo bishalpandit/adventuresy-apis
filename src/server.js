@@ -5,8 +5,9 @@ import chalk from 'chalk'
 import passport from 'passport'
 import cors from 'cors'
 import cookieSession from 'cookie-session'
+import cookieParser from 'cookie-parser'
 import './auth/passport.js'
-import { connectDB, PORT } from './configs/index.js'
+import { connectDB, PORT, COOKIE_SECRET } from './configs/index.js'
 import apiRoutes from './routes/index.js'
 import createSockerServer from './services/socket/socketServer.js'
 
@@ -16,10 +17,21 @@ const httpServer = new http.Server(app);
 
 dotenv.config();
 
-// Google Authentication Middlewares
+app.use(cors({
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    credentials: true,
+}))
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
 app.use(cookieSession({
-    name: 'google-auth-session',
-    keys: ['key1', 'key2']
+    keys: [COOKIE_SECRET],
+    httpOnly: true,
+    sameSite: 'strict',
+    maxAge: 24 * 60 * 60 * 1000,
 }))
 
 app.use(passport.initialize());
@@ -27,23 +39,14 @@ app.use(passport.session());
 
 createSockerServer(httpServer);
 
-app.use(express.json());
-
-//CORS
-app.use(cors({
-    origin: '*'
-}))
-
-//Connect to DB
 connectDB();
 
 app.use('/api', apiRoutes);
 
-//Test Route
 app.get('/', (req, res,) => {
-    res.json('Adventuresy API running...')
+    console.log(req.session);
+    res.json('Welcome to Adventuresy 🦄🌈✨👋🌎🌍🌏✨🌈🦄')
 })
-
 
 httpServer.listen(PORT, () => {
     console.log(chalk.blueBright(`Server running on PORT ${PORT}`));

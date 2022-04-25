@@ -29,5 +29,9 @@ export const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 
 export const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 
-export const CLIENT_URL = process.env.CLIENT_URL;
+export const SUCCESS_URL = process.env.SUCCESS_URL || 'http://localhost:3000/';
+
+export const LOGIN_URL = process.env.LOGIN_URL || 'http://localhost:3000/splash';
+
+export const COOKIE_SECRET = process.env.COOKIE_SECRET;
 
