@@ -1,30 +1,10 @@
 import { Router } from 'express'
-import passport from 'passport'
-import { getUserByID, registerUser, loginUser, updateUser } from '../controllers/user.controllers.js'
+import { getUser, updateUser } from '../controllers/user.controllers.js'
 import protect from '../middlewares/authMiddleware.js'
 
 const router = Router();
 
-router.route('/signup').post(registerUser)
-
-router.route('/signin').post(loginUser)
-
-router.route('/signin/google')
-    .get(passport.authenticate('google', {
-        scope:
-            ['email', 'profile']
-    }
-    ))
-
-router.get('/oauth/redirect/google',
-    passport.authenticate('google', {
-        failureRedirect: '/failure',
-        successRedirect: '/'
-    })
-);
-
-
-router.route('/details/:id').get(protect, getUserByID)
+router.route('/details/:id').get(protect, getUser)
 
 router.route('/update/:id').put(protect, updateUser)
 

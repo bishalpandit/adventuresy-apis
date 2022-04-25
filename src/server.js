@@ -1,69 +1,54 @@
-import db from './configs/db.js'
 import express from 'express'
 import dotenv from 'dotenv'
+import http from 'http'
 import chalk from 'chalk'
 import passport from 'passport'
 import cors from 'cors'
-import helmet from 'helmet'
-import morgan from 'morgan'
 import cookieSession from 'cookie-session'
+import cookieParser from 'cookie-parser'
 import './auth/passport.js'
+import { connectDB, PORT, COOKIE_SECRET } from './configs/index.js'
+import apiRoutes from './routes/index.js'
+import createSockerServer from './services/socket/socketServer.js'
 
-import userRoutes from './routes/user.routes.js'
-import adventureRoutes from './routes/adventure.routes.js'
-import reviewRoutes from './routes/review.routes.js'
-import reservationRoutes from './routes/reservation.routes.js'
-import streamRoutes from './routes/stream.routes.js'
 
-const app = express()
+const app = express();
+const httpServer = new http.Server(app);
 
-// Configs
 dotenv.config();
 
-//app.use(morgan("dev"));
-//app.use(helmet());
-app.use(express.json());
-
-//CORS
 app.use(cors({
-    origin: '*'
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    credentials: true,
 }))
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
-// Google Authentication Middlewares
 app.use(cookieSession({
-    name: 'google-auth-session',
-    keys: ['key1', 'key2']
+    keys: [COOKIE_SECRET],
+    httpOnly: true,
+    sameSite: 'strict',
+    maxAge: 24 * 60 * 60 * 1000,
 }))
 
 app.use(passport.initialize());
 app.use(passport.session());
 
+createSockerServer(httpServer);
 
-//Connect to Postgres DB
-db.connect((err) => {
-    if (err)
-        console.log(err);
-    else
-        console.log(chalk.yellowBright('Connected to PostgreSQL'));
-})
+connectDB();
 
+app.use('/api', apiRoutes);
 
-// Routes
-app.use('/api/users', userRoutes)
-app.use('/api/adventures', adventureRoutes)
-app.use('/api/reservation', reservationRoutes)
-app.use('/api/review', reviewRoutes)
-app.use('/api/stream', streamRoutes)
-
-//Test Route
 app.get('/', (req, res,) => {
-    res.json('Adventuresy API running...')
+    console.log(req.session);
+    res.json('Welcome to Adventuresy 🦄🌈✨👋🌎🌍🌏✨🌈🦄')
 })
 
-const PORT = process.env.PORT || 80
-
-
-app.listen(PORT, () => {
+httpServer.listen(PORT, () => {
     console.log(chalk.blueBright(`Server running on PORT ${PORT}`));
 })
+
