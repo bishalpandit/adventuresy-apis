@@ -1,3 +1,3 @@
-const baseURL = 'https://adventuresy-apis.azurewebsites.net';
+const baseURL = 'https://adventuresy.vercel.app';
 
 export default baseURL;

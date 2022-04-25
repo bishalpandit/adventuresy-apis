@@ -28,7 +28,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(cookieSession({
-    keys: [COOKIE_SECRET],
+    keys: ['jhjjkj'],
     httpOnly: true,
     maxAge: 24 * 60 * 60 * 1000,
 }))

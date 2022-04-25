@@ -18,7 +18,6 @@ passport.use(new passoauth.Strategy({
     clientID: GOOGLE_CLIENT_ID,
     clientSecret: GOOGLE_CLIENT_SECRET,
     callbackURL: `${baseURL}/api/auth/oauth/redirect/google`,
-    passReqToCallback: true,
 },
     async (request, accessToken, refreshToken, profile, done) => {
 

@@ -15,16 +15,19 @@ router.route('/login/google')
         scope:
             ['email', 'profile']
     }
-));
+    ));
 
 router.get('/user', protect, checkAuth);
 
 router.get('/oauth/redirect/google',
     passport.authenticate('google', {
-        successRedirect: SUCCESS_URL,
         failureRedirect: LOGIN_URL,
         failureMessage: "Cannot login to Google, please try again later!",
-    })
+    }), function (req, res) {
+        setTimeout(() => {
+            res.redirect('/');
+        }, 500);
+    }
 );
 
 router.get("/logout", protect, logout)
