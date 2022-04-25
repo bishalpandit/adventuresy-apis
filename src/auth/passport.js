@@ -1,6 +1,7 @@
 import { db } from '../configs/index.js'
 import passport from 'passport'
 import passoauth from 'passport-google-oauth20'
+import baseURL from '../library/utils/baseURL.js';
 
 
 passport.serializeUser(function (user, done) {
@@ -16,7 +17,7 @@ passport.deserializeUser(function (user, done) {
 passport.use(new passoauth.Strategy({
     clientID: `${process.env.GOOGLE_CLIENT_ID}`,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "http://localhost:5000/api/auth/oauth/redirect/google",
+    callbackURL: `${baseURL}/api/auth/oauth/redirect/google`,
     passReqToCallback: true,
 },
     async (request, accessToken, refreshToken, profile, done) => {
