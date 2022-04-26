@@ -24,7 +24,7 @@ router.get('/oauth/redirect/google',
         failureRedirect: LOGIN_URL,
         failureMessage: "Cannot login to Google, please try again later!",
     }), function (req, res) {
-        res.redirect('/');
+        res.redirect(SUCCESS_URL);
     }
 );
 

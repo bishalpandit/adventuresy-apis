@@ -4,7 +4,6 @@ const isAuthenticated = (req, res, next) => {
 
     const authHeader = (req.cookies && req.cookies["jwt"]) || req.headers["authorization"];
     const token = authHeader && authHeader.split(' ')[1] || authHeader;
-    
     if (token) {
         jwt.verify(token, process.env.JWT_SECRET, (err, payload) => {
             if (err) {
@@ -16,7 +15,7 @@ const isAuthenticated = (req, res, next) => {
             }
             req.user = payload;
         });
-    } else if (!req.user) {
+    } else if (Object.keys(req.session).length !== 0) {
         return res
             .json({
                 msg: 'Not authorized',
