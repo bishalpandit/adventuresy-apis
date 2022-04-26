@@ -22,10 +22,8 @@ router.get('/user', protect, checkAuth);
 router.get('/oauth/redirect/google',
     passport.authenticate('google', {
         failureRedirect: LOGIN_URL,
-        failureMessage: "Cannot login to Google, please try again later!",
-    }), function (req, res) {
-        res.redirect(SUCCESS_URL);
-    }
+        successRedirect: SUCCESS_URL
+    })
 );
 
 router.get("/logout", protect, logout)
