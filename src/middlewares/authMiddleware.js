@@ -15,7 +15,7 @@ const isAuthenticated = (req, res, next) => {
             }
             req.user = payload;
         });
-    } else if (Object.keys(req.session).length !== 0) {
+    } else if (!req.user) {
         return res
             .json({
                 msg: 'Not authorized',

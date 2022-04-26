@@ -18,7 +18,7 @@ const httpServer = new http.Server(app);
 dotenv.config();
 
 app.use(cors({
-    origin: ['http://localhost:3000', 'https://adventuresy.vercel.app', 'https://adventuresy-bishalpandit.vercel.app'],
+    origin: ['http://localhost:3000', 'https://app.adventuresy.in', 'https://adventuresy.vercel.app'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     credentials: true,
 }))
@@ -28,10 +28,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(cookieSession({
-    keys: ['jhjjkj'],
+    keys: [COOKIE_SECRET],
     httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000,
-    sameSite: false,
+    maxAge:  60 * 60 * 1000,
+    sameSite: true,
+    secure: true
 }))
 
 app.use(passport.initialize());
