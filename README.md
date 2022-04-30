@@ -7,4 +7,3 @@ Backend for Adventuresy App
 ### Bugs
 1. If first time Google Login doesn't work,
    login once again using same account.
-2. Normal login broken.
