@@ -6,9 +6,9 @@ import protect from '../middlewares/authMiddleware.js'
 
 const router = Router();
 
-router.route('/register').post(register)
+router.route('/register').post(register);
 
-router.route('/login').post(jwtLogin)
+router.route('/login').post(jwtLogin);
 
 router.route('/login/google')
     .get(passport.authenticate('google', {

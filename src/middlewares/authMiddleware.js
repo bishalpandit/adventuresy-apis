@@ -5,7 +5,7 @@ const isAuthenticated = (req, res, next) => {
     const authHeader = (req.cookies && req.cookies["jwt"]) || req.headers["authorization"];
     const token = authHeader && authHeader.split(' ')[1] || authHeader;
     if (token) {
-        jwt.verify(token, process.env.JWT_SECRET, (err, payload) => {
+        jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
             if (err) {
                 return res
                     .json({
@@ -13,7 +13,7 @@ const isAuthenticated = (req, res, next) => {
                         status: false
                     });
             }
-            req.user = payload;
+            req.user = decoded.payload;
         });
     } else if (!req.user) {
         return res

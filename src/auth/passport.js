@@ -23,25 +23,26 @@ passport.use(new passoauth.Strategy({
     async (request, accessToken, refreshToken, profile, done) => {
 
         try {
-            const userExists = await db.query('SELECT * FROM USERS WHERE googleID = $1', [profile.id]);
-            delete userExists['password'];
+            const userExists = await db.query('SELECT first_name, last_name, email_id, mobile FROM USERS WHERE googleID = $1', [profile.id]);
 
             if (!userExists.rowCount) {
                 const newUser = {
-                    f_name: profile.name.givenName,
-                    l_name: profile.name.familyName,
-                    email: profile?.emails[0].value,
+                    first_name: profile.name.givenName,
+                    last_name: profile.name.familyName,
+                    email_id: profile?.emails[0].value,
                     hashedPassword: 'GoogleID',
-                    mobile: ''
                 }
 
-                const Insertquery = {
+                const insertQuery = {
                     text: 'INSERT INTO users(googleid, first_name, last_name, email_id, password) VALUES($1, $2, $3, $4, $5)',
-                    values: [profile.id, newUser.f_name, newUser.l_name, newUser.email, newUser.hashedPassword],
+                    values: [profile.id, newUser.first_name, newUser.last_name, newUser.email_id, newUser.hashedPassword],
                 }
 
-                const user = await db.query(Insertquery);
-                return done(null, user.rows[0]);
+                    (async () => {
+                        await db.query(insertQuery);
+                    })();
+
+                return done(null, newUser);
             }
             return done(null, userExists.rows[0]);
         } catch (error) {

@@ -7,7 +7,6 @@ export const register = async (req, res) => {
     try {
         const userExists = await db.query('SELECT ID FROM USERS WHERE EMAIL_ID = $1', [req.body.email])
 
-        console.log(userExists);
         if (userExists.rowCount) {
             res.status(400).send('User Already Exists!')
         }
@@ -29,20 +28,18 @@ export const register = async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const Insertquery = {
+        const insertQuery = {
             text: 'INSERT INTO users(first_name, last_name, email_id, password, mobile) VALUES($1, $2, $3, $4, $5)',
-            values: [f_name, l_name, email, hashedPassword, mobile],
+            values: [f_name, l_name, email, hashedPassword, mobile]
         }
-        await db.query(Insertquery);
+        await db.query(insertQuery);
 
-        const userQuery = {
-            text: 'SELECT first_name, last_name, email_id, mobile FROM USERS WHERE EMAIL_ID = $1',
-            values: [req.body.email]
-        }
+        const user = await db.query('SELECT * FROM USERS WHERE EMAIL_ID = $1', [email]);
 
         if (user) {
+            delete user.rows[0]['password']
             const token = generateToken(user.rows[0]);
-            res.cookie('jwt', token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7 });
+            res.cookie('jwt', token, { httpOnly: true, maxAge: 1000 * 60 * 60 });
 
             res.status(201).json({
                 success: true
@@ -62,30 +59,25 @@ export const register = async (req, res) => {
 export const jwtLogin = async (req, res) => {
 
     try {
-        const userExists = await db.query('SELECT ID FROM USERS WHERE EMAIL_ID = $1', [req.body.email])
-        if (!userExists.rowCount) {
+        const user = await db.query('SELECT * FROM USERS WHERE EMAIL_ID = $1', [req.body.email]);
+
+        if (!user.rowCount) {
             res.status(400).send('User Doesn\'t Exist. Sign Up!')
         }
-
-        const userQuery = {
-            text: 'SELECT * FROM USERS WHERE EMAIL_ID = $1',
-            values: [req.body.email]
-        }
-
-        const user = await db.query(userQuery);
 
         const match = await bcrypt.compare(req.body.password, user.rows[0].password)
 
         if (match) {
+            delete user.rows[0]['password']
             const token = generateToken(user.rows[0]);
-            res.cookie('jwt', token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7,});
-            res.status(200)
-                .json({
-                    success: true
-                });
+            res.cookie('jwt', token, { httpOnly: true, maxAge: 1000 * 60 * 60 });
+            res.json({
+                status: true
+            });
         }
         else {
-            res.status(401).send('Wrong Password!')
+            res.status(401);
+            throw new Error('Wrong Password')
         }
     }
     catch (err) {
