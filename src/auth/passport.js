@@ -36,11 +36,11 @@ passport.use(new passoauth.Strategy({
                 const insertQuery = {
                     text: 'INSERT INTO users(googleid, first_name, last_name, email_id, password) VALUES($1, $2, $3, $4, $5)',
                     values: [profile.id, newUser.first_name, newUser.last_name, newUser.email_id, newUser.hashedPassword],
-                }
+                };
 
-                    (async () => {
-                        await db.query(insertQuery);
-                    })();
+                (async () => {
+                    await db.query(insertQuery);
+                })();
 
                 return done(null, newUser);
             }
