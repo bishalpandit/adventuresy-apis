@@ -31,7 +31,7 @@ To run this app locally on your PC, follow the instructions given below:
    ```sh
    npm install
    ```
-4. Create a .env file in root folder and write your Secret keys/tokens listed above.
+4. Create a .env file inside the src folder and write your Secret keys/tokens listed above.
    ```js
    const KEY = KEY_VALUE;
    ```
