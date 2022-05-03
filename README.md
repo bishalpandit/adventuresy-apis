@@ -41,7 +41,9 @@ To run this app locally on your PC, follow the instructions given below:
 ## Usage
 
 You may make your own Postman collection by checking the routes folder in src and test the API endpoints(). But you don't need to as I've done it to make
-things quicker for  you. Import the postman collection via this link ```https://www.getpostman.com/collections/2d1f774e250dfc6bd1b5``` in your Postman and start testing them.
+things quicker for  you. Import the postman collection via this link ```https://www.getpostman.com/collections/2d1f774e250dfc6bd1b5``` in your Postman and start testing them. 
+
+```Dummy data``` will be added soon for easier testing purposes.
 
 To run this, use ```npm run start``` and for more configuration details, check out the package.json file.
 
