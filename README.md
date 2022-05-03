@@ -1,6 +1,6 @@
 # Adventuresy Backend
 
-Backend for Adventuresy App(app.adventuresy.in) built on top of `Express JS` alongwith `PostgreSQL` database. Currently working on a service which will use `Socket.io` for hosting discussion rooms for the adventurers/travellers.
+Backend for Adventuresy App(app.adventuresy.in) built on top of `Express JS` alongwith `PostgreSQL` database. Currently working on a service which will use `Socket.io` for hosting discussion rooms for adventurers/travellers.
 
 
 <!-- GETTING STARTED -->
