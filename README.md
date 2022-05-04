@@ -2,6 +2,9 @@
 
 Backend for Adventuresy App(app.adventuresy.in) built on top of `Express JS` alongwith `PostgreSQL` database. Currently working on a service which will use `Socket.io` for hosting discussion rooms for adventurers/travellers.
 
+## ER Diagram
+
+<img src="/adventuresy-ERD.png" alt="Logo" width="800" height="600">
 
 <!-- GETTING STARTED -->
 ## Getting Started
@@ -59,3 +62,8 @@ To run this, use ```npm run start``` and for more configuration details, check o
 
 ### Bugs
 None rn :)
+
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+[er-diagram]: adventuresy-ERD.png
