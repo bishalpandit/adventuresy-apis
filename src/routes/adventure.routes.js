@@ -11,7 +11,7 @@ const router = Router()
 router.get('/', getAdventures)
 
 // api/adventures/:id
-router.get('/adv/:id', getAdventureById)
+router.get('/details/:id', getAdventureById)
 
 // api/adventures/category?categ=skiing%20scuba%20surfing
 router.get('/category', getAdventuresByCategory)

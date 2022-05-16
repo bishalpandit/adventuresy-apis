@@ -14,6 +14,26 @@ on pa.adventure_id = adv.id
 group by adventure_id
 order by avg(rating) desc;
 
+SELECT *
+             FROM ADVENTURES
+             WHERE id = '2427b7df-f565-426e-a375-b0fb8d2dbcf1';
+
+SELECT *
+FROM REVIEWS REV 
+JOIN RESERVATIONS RES 
+ON REV.reservation_id = RES.id
+JOIN PARTNERADVENTURELINK PA 
+ON RES.partneradventurelink_id = PA.id
+WHERE PA.adventure_id = '2427b7df-f565-426e-a375-b0fb8d2dbcf1';
+
+SELECT avg(rating)
+FROM REVIEWS REV 
+JOIN RESERVATIONS RES 
+ON REV.reservation_id = RES.id
+JOIN PARTNERADVENTURELINK PA 
+ON RES.partneradventurelink_id = PA.id
+WHERE PA.adventure_id = '2427b7df-f565-426e-a375-b0fb8d2dbcf1';
+
 insert into bookingavailability(partner_id, adventure_id, avail_dates)
 values('f519ae65-4bfb-429e-ab64-114a23f4092a','2427b7df-f565-426e-a375-b0fb8d2dbcf1', 
 	   ARRAY[date('2022-03-12'),
@@ -78,7 +98,21 @@ where id = '71b455d1-d6f2-49b8-8778-af7d14ce296a';
 delete from reviews
 where id = 'b8c122ae-7e8d-4edc-90f7-12632a17db81';
 
+update partneradventurelink
+set price = 25000
+where partner_id = 'f519ae65-4bfb-429e-ab64-114a23f4092a'
+and adventure_id = '2427b7df-f565-426e-a375-b0fb8d2dbcf1';
+
 select * from users;
 
 insert into reviews(reservation_id, content, rating)
 values('4042f6c3-6418-4d6a-9912-f03441b3f3cc', 'It was really fun but scary also.', 3.5);
+
+SELECT partner_id, price,
+(SELECT pname 
+FROM PARTNERS
+WHERE id = partner_id)
+FROM PARTNERADVENTURELINK
+WHERE adventure_id = '2427b7df-f565-426e-a375-b0fb8d2dbcf1';
+
+SELECT 

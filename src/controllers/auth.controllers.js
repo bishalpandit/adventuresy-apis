@@ -60,9 +60,10 @@ export const jwtLogin = async (req, res) => {
 
     try {
         const user = await db.query('SELECT * FROM USERS WHERE EMAIL_ID = $1', [req.body.email]);
-
+        console.log(user);
         if (!user.rowCount) {
-            res.status(400).send('User Doesn\'t Exist. Sign Up!')
+            res.status(400).send('User Doesn\'t Exist. Sign Up!');
+            return;
         }
 
         const match = await bcrypt.compare(req.body.password, user.rows[0].password)

@@ -88,31 +88,52 @@ export const getAdventures = async (req, res) => {
 export const getAdventureById = async (req, res) => {
     try {
         const adventureID = req.params.id;
-        const partnerID = req.query;
-        let adventure;
+        let data = {};
 
-        if (partnerID) {
-            adventure = await db.query(
-                "SELECT * FROM PARTNERADVENTURELINK WHERE PARTNER_ID = $1",
-                [partnerID]
-            );
-        } else {
-            adventure = await db.query("SELECT * FROM ADVENTURES WHERE ID = $1", [
-                adventureID,
-            ]);
-        }
+        let adventure = await db.query(
+            `SELECT *
+             FROM ADVENTURES
+             WHERE id = ${"'" + adventureID + "'"};
+            `)
 
-        if (adventure.rowCount) {
-            res.status(200).json({
-                data: adventure.rows[0],
-                status: true,
-            });
-        } else {
-            res.status(404).json({
-                msg: "not found",
-                status: false,
+        console.log(adventure.rows[0]);
+
+        if(!adventure.rows) {
+            res.json({
+                message: "Not found",
+                status: false
             });
         }
+
+        let rating = await db.query(
+            `SELECT avg(rating)
+            FROM REVIEWS REV 
+            JOIN RESERVATIONS RES 
+            ON REV.reservation_id = RES.id
+            JOIN PARTNERADVENTURELINK PA 
+            ON RES.partneradventurelink_id = PA.id
+            WHERE PA.adventure_id = ${"'" + adventureID + "'"}
+            `
+        );
+
+        let partners = await db.query(
+            `SELECT partner_id, price,
+            (SELECT pname 
+            FROM PARTNERS
+            WHERE id = partner_id)
+            FROM PARTNERADVENTURELINK
+            WHERE adventure_id = ${"'" + adventureID + "'"};
+            `
+        );
+
+        data.adventure = adventure.rows[0];
+        data.partners = partners.rows;
+        data.rating = rating.rows[0];
+
+        res.json({
+            data: data,
+            status: true
+        });
     } catch (error) {
         res.status(400).json({
             error: error,
