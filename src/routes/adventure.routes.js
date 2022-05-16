@@ -5,13 +5,13 @@ const router = Router()
 
 // Type -> Adventure, Sport, Event, Concert, Animal 
 
-router.use(protect);
+//router.use(protect);
 
 // api/adventures?ctype=popular&limit=5
 router.get('/', getAdventures)
 
 // api/adventures/:id
-router.get('/adv/:id', getAdventureById)
+router.get('/details/:id', getAdventureById)
 
 // api/adventures/category?categ=skiing%20scuba%20surfing
 router.get('/category', getAdventuresByCategory)
