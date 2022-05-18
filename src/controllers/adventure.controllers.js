@@ -9,7 +9,7 @@ export const getAdventures = async (req, res) => {
         const collectionMap = new Map([
             [
                 "popular",
-                `SELECT A.title, A.type, A.summary, A.img_link 
+                `SELECT A.id, A.title, A.type, A.summary, A.img_link 
                     FROM ADVENTURES A
                     JOIN PARTNERADVENTURELINK PA
                     ON A.id = PA.adventure_id
@@ -22,7 +22,7 @@ export const getAdventures = async (req, res) => {
 
             [
                 "recent",
-                `SELECT title, type, summary, img_link
+                `SELECT id, title, type, summary, img_link
                     FROM ADVENTURES 
                     ORDER BY created_at DESC 
                     LIMIT ${limit ? limit : "NULL"};`,
@@ -30,7 +30,7 @@ export const getAdventures = async (req, res) => {
 
             [
                 "trending",
-                `SELECT adventure_id, 
+                `SELECT adventure_id as id, 
                     (SELECT title FROM ADVENTURES A WHERE A.id = adventure_id ), 
                     (SELECT summary FROM ADVENTURES A WHERE A.id = adventure_id ), 
                     (SELECT img_link FROM ADVENTURES A WHERE A.id = adventure_id ) 
@@ -47,7 +47,7 @@ export const getAdventures = async (req, res) => {
             ],
             [
                 "all",
-                `SELECT title, type, summary 
+                `SELECT id, title, type, summary 
                 FROM ADVENTURES 
                 LIMIT ${limit ? limit : "NULL"};`
             ]

@@ -46,20 +46,29 @@ select a.title, p.name, ba.avail_dates from bookingavailability ba
 join partners p on p.id = ba.partner_id
 join adventures a on a.id = ba.adventure_id;
 
-select * from partners;
+
+
+insert into partners(pname, address, email)
+values('Outbound Adventures', 'Uttarakhand, India', 'contact@outboundadventures.com');
 
 select * from adventures;
 
+select * from partners;
 -- D-M622
 
-select * from adventures;
+select * from partneradventurelink pal
+join partners p on pal.partner_id = p.id
+join adventures a on pal.adventure_id = a.id;
 
-insert into partneradventurelink(partner_id, adventure_id)
-values('a741a231-d61d-418b-91d4-e8851c901a26','04605ad4-9a2b-4e99-92ba-7d10079d24cf');
+insert into partneradventurelink(partner_id, adventure_id, price)
+values('c1cf0c5b-3136-40f2-9ace-478a9ec4664f','2427b7df-f565-426e-a375-b0fb8d2dbcf1', 23000);
+
+// Outbound Id - c1cf0c5b-3136-40f2-9ace-478a9ec4664f
+// Alta Advent - a741a231-d61d-418b-91d4-e8851c901a26
+// Braver - f519ae65-4bfb-429e-ab64-114a23f4092a
 
 select * from partneradventurelink;
 
-select * from adventureprices;
 
 alter table adventureprices
 add constraint partadvenlinkfk foreign key(partneradventurelink_id) references partneradventurelink(id);
@@ -67,10 +76,7 @@ add constraint partadvenlinkfk foreign key(partneradventurelink_id) references p
 alter table partneradventurelink
 add constraint partadvtlink_pk primary key(id);
 
-select * from adventureprices ap 
-join partneradventurelink pal on pal.id = ap.partneradventurelink_id
-join partners p on pal.partner_id = p.id
-join adventures a on pal.adventure_id = a.id;
+
 
 update Adventures
 set img_link = 'paragliding.jpg'
@@ -83,6 +89,7 @@ join partneradventurelink pa
 on res.partneradventurelink_id = pa.id 
 join adventures adv
 on pa.adventure_id = adv.id;
+
 select * from users;
 select * from partneradventurelink;
 select * from reviews;
@@ -99,9 +106,9 @@ delete from reviews
 where id = 'b8c122ae-7e8d-4edc-90f7-12632a17db81';
 
 update partneradventurelink
-set price = 25000
-where partner_id = 'f519ae65-4bfb-429e-ab64-114a23f4092a'
-and adventure_id = '2427b7df-f565-426e-a375-b0fb8d2dbcf1';
+set price = 36000
+where id = '57ef8f9b-61e2-4672-8f6b-e336774c23e9';
+
 
 select * from users;
 
@@ -115,4 +122,4 @@ WHERE id = partner_id)
 FROM PARTNERADVENTURELINK
 WHERE adventure_id = '2427b7df-f565-426e-a375-b0fb8d2dbcf1';
 
-SELECT 
+SELECT * 
