@@ -25,9 +25,6 @@ router.get('/filter', getAdventuresByFilter)
 // api/adventures/geoloc
 // router.get('/geoloc', getAdventureByGeoLoc)
 
-// api/adventures/avail/3jif3f93asf/?date? | for march month -> send the month year and get the available dates...
-router.get('/availdates/:pid/:aid', getAvailableDates)
-
 //router.post('/logs', adventureLogs);
 
 export default router;

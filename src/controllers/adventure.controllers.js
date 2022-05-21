@@ -120,9 +120,12 @@ export const getAdventureById = async (req, res) => {
             `SELECT partner_id, price,
             (SELECT pname 
             FROM PARTNERS
-            WHERE id = partner_id)
-            FROM PARTNERADVENTURELINK
-            WHERE adventure_id = ${"'" + adventureID + "'"};
+            WHERE id = partner_id),
+            avail_dates
+            FROM PARTNERADVENTURELINK PA
+            LEFT JOIN BOOKINGAVAILABILITY BA
+            ON PA.id = BA.partneradventurelink_id
+            WHERE PA.adventure_id = ${"'" + adventureID + "'"};
             `
         );
 

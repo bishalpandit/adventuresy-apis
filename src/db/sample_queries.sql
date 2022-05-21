@@ -49,7 +49,7 @@ join adventures a on a.id = ba.adventure_id;
 
 
 insert into partners(pname, address, email)
-values('Outbound Adventures', 'Uttarakhand, India', 'contact@outboundadventures.com');
+values('Sky Waltz', 'Jaipur, Rajasthan, India', 'contact@skywaltz.com');
 
 select * from adventures;
 
@@ -61,11 +61,12 @@ join partners p on pal.partner_id = p.id
 join adventures a on pal.adventure_id = a.id;
 
 insert into partneradventurelink(partner_id, adventure_id, price)
-values('c1cf0c5b-3136-40f2-9ace-478a9ec4664f','2427b7df-f565-426e-a375-b0fb8d2dbcf1', 23000);
+values('68a19b4e-5ed3-4608-9ef2-981e4f100a61','26eaafe7-1d0e-4458-9381-ff0b124d4ef5', 17000);
 
 // Outbound Id - c1cf0c5b-3136-40f2-9ace-478a9ec4664f
 // Alta Advent - a741a231-d61d-418b-91d4-e8851c901a26
 // Braver - f519ae65-4bfb-429e-ab64-114a23f4092a
+// Sky Waltz - 68a19b4e-5ed3-4608-9ef2-981e4f100a61
 
 select * from partneradventurelink;
 
@@ -121,5 +122,3 @@ FROM PARTNERS
 WHERE id = partner_id)
 FROM PARTNERADVENTURELINK
 WHERE adventure_id = '2427b7df-f565-426e-a375-b0fb8d2dbcf1';
-
-SELECT * 
