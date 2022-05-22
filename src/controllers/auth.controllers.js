@@ -11,15 +11,14 @@ export const register = async (req, res) => {
             res.status(400).send('User Already Exists!')
         }
 
-        const { f_name, l_name, email, password, mobile } = req.body;
+        const { first_name, last_name, email, password } = req.body;
 
         const errors = [];
 
-        !f_name && errors.push('First name is required');
-        !l_name && errors.push('Last name is required');
+        !first_name && errors.push('First name is required');
+        !last_name && errors.push('Last name is required');
         !email && errors.push('Email is required');
         !password && errors.push('Password is required');
-        !mobile && errors.push('Mobile is required');
 
         if (errors.length > 0) {
             res.status(400);
@@ -29,15 +28,15 @@ export const register = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const insertQuery = {
-            text: 'INSERT INTO users(first_name, last_name, email_id, password, mobile) VALUES($1, $2, $3, $4, $5)',
-            values: [f_name, l_name, email, hashedPassword, mobile]
+            text: 'INSERT INTO users(first_name, last_name, email_id, password) VALUES($1, $2, $3, $4)',
+            values: [first_name, last_name, email, hashedPassword]
         }
         await db.query(insertQuery);
 
         const user = await db.query('SELECT * FROM USERS WHERE EMAIL_ID = $1', [email]);
 
         if (user) {
-            delete user.rows[0]['password']
+            delete user.rows[0]['password'];
             const token = generateToken(user.rows[0]);
             res.cookie('jwt', token, { httpOnly: true, maxAge: 1000 * 60 * 60 });
 
