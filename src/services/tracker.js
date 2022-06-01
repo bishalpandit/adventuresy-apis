@@ -1,15 +1,19 @@
 import { db } from "../configs/index.js";
 
 export const logAdventure = async (req, adventure) => {
-    const query = `INSERT INTO USERLOGS 
-        VALUES(${req.user.id}, ${getTag(adventure.tags)}, ${adventure.location.x + ', ' + adventure.location.y})`;
+    console.log(req.user);
+    const location = adventure.location.x + "," + adventure.location.y;
+    const tag = getTag(adventure.tags);
+    const query = `INSERT INTO 
+        USERLOGS(user_id, tag_name, location) 
+        VALUES(${"'" + req.user.id + "'"}, ${"'" + tag + "'"}, ${"'" + location + "'"})`;
     await db.query(query);
 }
 
 const getTag = (tags) => {
-    const tagList = new Set('water', 'land', 'air');
     return tags.find((tag) => {
-        if (tagList.has(tag))
-            return true;
-    });
+        return tag == "air" ||
+           tag == "land" ||
+           tag == "water";
+    })
 }
