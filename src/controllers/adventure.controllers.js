@@ -1,4 +1,5 @@
 import { db } from "../configs/index.js";
+import { logAdventure } from "../services/tracker.js";
 
 export const getAdventures = async (req, res) => {
     try {
@@ -137,6 +138,8 @@ export const getAdventureById = async (req, res) => {
             data: data,
             status: true
         });
+
+        logAdventure(req, data.adventure);
     } catch (error) {
         res.status(400).json({
             error: error,

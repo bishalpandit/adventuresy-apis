@@ -41,7 +41,8 @@ export const register = async (req, res) => {
             res.cookie('jwt', token, { httpOnly: true, maxAge: 1000 * 60 * 60 });
 
             res.status(201).json({
-                success: true
+                success: true,
+                user: user.rows[0]
             })
         }
         else {
@@ -59,7 +60,6 @@ export const jwtLogin = async (req, res) => {
 
     try {
         const user = await db.query('SELECT * FROM USERS WHERE EMAIL_ID = $1', [req.body.email]);
-        console.log(user);
         if (!user.rowCount) {
             res.status(400).send('User Doesn\'t Exist. Sign Up!');
             return;
@@ -68,11 +68,12 @@ export const jwtLogin = async (req, res) => {
         const match = await bcrypt.compare(req.body.password, user.rows[0].password)
 
         if (match) {
-            delete user.rows[0]['password']
+            delete user.rows[0]['password'];
             const token = generateToken(user.rows[0]);
             res.cookie('jwt', token, { httpOnly: true, maxAge: 1000 * 60 * 60 });
             res.json({
-                status: true
+                status: true,
+                user: user.rows[0],
             });
         }
         else {
