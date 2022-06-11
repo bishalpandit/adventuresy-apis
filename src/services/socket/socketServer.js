@@ -1,10 +1,9 @@
 import { Server } from "socket.io";
-import fs from 'fs'
 
 const createSockerServer = (server) => {
     const io = new Server(server, {
         cors: {
-            origin: ["http://localhost:5000", "https://adventuresy.vercel.app"],
+            origin: ["http://localhost:3000", "https://app.adventuresy.in"],
             methods: ["GET", "POST"],
         },
     });

@@ -139,7 +139,7 @@ export const getAdventureById = async (req, res) => {
             status: true
         });
 
-        logAdventure(req, data.adventure);
+       // logAdventure(req, data.adventure);
     } catch (error) {
         res.status(400).json({
             error: error,

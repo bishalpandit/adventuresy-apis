@@ -122,3 +122,53 @@ FROM PARTNERS
 WHERE id = partner_id)
 FROM PARTNERADVENTURELINK
 WHERE adventure_id = '2427b7df-f565-426e-a375-b0fb8d2dbcf1';
+
+DROP FUNCTION updateUserRecommendation;
+
+CREATE OR REPLACE FUNCTION updateUserRecommendation(userid uuid) 
+   RETURNS JSON
+   LANGUAGE PLPGSQL
+AS $$
+
+DECLARE
+rowCount float:= 0;
+water float:= 0;
+air float:= 0;
+land float:= 0;
+Nrecommendation json;
+rec record;
+BEGIN
+    for rec in select count(*), tag_name
+           from userlogs
+           where user_id = cast(userid as uuid)
+           group by tag_name
+	loop
+		if rec.tag_name = 'water' then
+            water := rec.count;
+        elsif rec.tag_name = 'air' then
+            air := rec.count;
+        else 
+            land := rec.count;
+        end if;
+	end loop;
+    
+    select count(*) into rowCount
+    from userlogs
+    where user_id = userid;
+    
+    land := land/rowCount;
+    water := water/rowCount;
+    air := air/rowCount;
+    
+    Nrecommendation:= jsonb_build_object('air', air, 'water', water, 'land', land);
+    
+    if(land != 0 or air != 0 or water != 0) then
+        update users
+        set recommendation = Nrecommendation
+        where user_id = userid;
+     end if;
+     
+     return Nrecommendation;
+END; 
+
+$$
