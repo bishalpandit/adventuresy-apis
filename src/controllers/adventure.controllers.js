@@ -191,20 +191,32 @@ export const getAdventuresBySearch = async (req, res) => {
         const query = req.query;
 
         const searchQuery = {
-            address: "'%" + query?.loc + "%'",
-            category: "'%" + query?.cat + "%'",
-            partner: "'%" + query?.part + "%'",
+            address: "'%" + query.location + "%'",
+            category: "'%" + query.activity + "%'",
+            partner: "'%" + query.partner + "%'",
         };
 
-        const adventure = await db.query(`SELECT * 
+        const adventure = await db.query(`
+        SELECT 
+        id, type, title, summary, address, img_link, tags
         FROM ADVENTURES A
-        JOIN PARTNERADVENTURELINK PAL
-        ON A.id = PAL.adventure_id
-        JOIN PARTNERS P
-        ON PAL.partner_id = P.id
         WHERE A.address ILIKE ${searchQuery.address} 
-        OR A.type ILIKE ${searchQuery.category}
-        OR P.pname ILIKE ${searchQuery.partner}
+        INTERSECT
+        SELECT 
+        id, type, title, summary, address, img_link, tags
+        FROM ADVENTURES A
+        WHERE A.type ILIKE ${searchQuery.category}
+        INTERSECT
+        SELECT id, type, title, summary, address, img_link, tags
+        FROM ADVENTURES A
+        WHERE id in (
+        SELECT adventure_id
+        FROM PARTNERADVENTURELINK PAL
+        WHERE partner_id in (
+        SELECT id
+        FROM PARTNERS P
+        WHERE P.pname ILIKE ${searchQuery.partner}
+        ))
         `);
 
         if (adventure.rowCount) {
@@ -214,7 +226,7 @@ export const getAdventuresBySearch = async (req, res) => {
             });
         } else {
             res.status(404).json({
-                msg: "not found",
+                message: "No data.",
                 status: false,
             });
         }
