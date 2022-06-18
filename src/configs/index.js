@@ -29,7 +29,7 @@ export const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 
 export const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 
-export const SUCCESS_URL = process.env.SUCCESS_URL || 'http://localhost:3000/';
+export const SUCCESS_URL = process.env.SUCCESS_URL + '/home' || 'http://localhost:3000/home';
 
 export const LOGIN_URL = process.env.LOGIN_URL || 'http://localhost:3000/splash';
 
