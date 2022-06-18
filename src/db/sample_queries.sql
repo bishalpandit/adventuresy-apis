@@ -194,3 +194,6 @@ SELECT
         ));
 
         
+select count(*), type
+from adventures
+group by type;

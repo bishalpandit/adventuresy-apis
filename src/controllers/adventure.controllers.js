@@ -65,13 +65,13 @@ export const getAdventures = async (req, res) => {
 
         if (q.size) {
             for (const collection of q.entries()) {
-                adventures[collection[0]] 
-                = (await db.query(collection[1])).rows;
-              }
+                adventures[collection[0]]
+                    = (await db.query(collection[1])).rows;
+            }
         }
         else {
             adventures["all"] = await db
-            .query(collectionMap.get("all"));
+                .query(collectionMap.get("all"));
         }
 
         res.json({
@@ -99,7 +99,7 @@ export const getAdventureById = async (req, res) => {
 
         console.log(adventure.rows[0]);
 
-        if(!adventure.rows) {
+        if (!adventure.rows) {
             res.json({
                 message: "Not found",
                 status: false
@@ -139,7 +139,7 @@ export const getAdventureById = async (req, res) => {
             status: true
         });
 
-       // logAdventure(req, data.adventure);
+        // logAdventure(req, data.adventure);
     } catch (error) {
         res.status(400).json({
             error: error,
@@ -196,7 +196,7 @@ export const getAdventuresBySearch = async (req, res) => {
             partner: "'%" + query.partner + "%'",
         };
 
-        const adventure = await db.query(`
+        const adventures = await db.query(`
         SELECT 
         id, type, title, summary, address, img_link, tags
         FROM ADVENTURES A
@@ -219,17 +219,15 @@ export const getAdventuresBySearch = async (req, res) => {
         ))
         `);
 
-        if (adventure.rowCount) {
-            res.status(200).json({
-                data: adventure.rows,
-                status: true,
-            });
-        } else {
-            res.status(404).json({
-                message: "No data.",
-                status: false,
-            });
+        if (!adventures.rowCount) {
+            throw new Error('No data');
         }
+
+        res.status(200).json({
+            data: adventures.rows,
+            status: true,
+        });
+
     } catch (error) {
         res.status(400).json({
             error: error,
@@ -277,60 +275,56 @@ export const getAvailableDates = async (req, res) => {
 export const getAdventuresByFilter = async (req, res) => {
     try {
         const query = req.query;
-        const nargs = Object.keys(query).length;
 
-        console.log(query);
+        const filterQuery = {};
 
-        const getOp = (queryItem) => {
-            switch (queryItem) {
-                case "maxprice":
-                    return "<=";
-                case "minprice":
-                    return ">=";
-                case "type":
-                    return "=";
-                case "address":
-                    return "ILIKE";
-                case "pname":
-                    return "ILIKE";
-                default:
-                    return "=";
-            }
-        };
+        Object.entries(query)
+            .map(([key, filters], index) => {
+                const query = filters
+                    .map((item, idx) => {
+                        if (idx != filters.length - 1)
+                            return `${key} ILIKE '%${item}%' OR `;
+                        else
+                            return `${key} ILIKE '%${item}%'`;
+                    })
+                    .join(" ");
 
-        const filterQuery = Object.entries(query)
-            .map(
-                (item) => `${item[0] == "maxprice" || item[0] == "minprice" ? "price" : item[0]
-                    }  ${getOp(item[0] + "")}
-                ${typeof item[1] == "string"
-                        ? `'${item[0] == "address" ? "%" + item[1] + "%" : item[1]
-                        }'`
-                        : Number(item[1])
-                    }`
-            )
-            .reduce((prev, cur, idx) => {
-                if (idx == nargs - 1) return prev + cur;
-                else return prev + cur + " AND ";
-            }, "");
-
-        const dbQuery = `SELECT * from adventureprices ap 
-        JOIN partneradventurelink pal ON pal.id = ap.partneradventurelink_id
-        JOIN partners p ON pal.partner_id = p.id
-        JOIN adventures a ON pal.adventure_id = a.id where ${filterQuery}`;
-
-        const adventures = await db.query(dbQuery);
-
-        if (adventures.rowCount) {
-            res.status(200).json({
-                data: adventures.rows,
-                status: true,
+                filterQuery[key] = query;
             });
-        } else {
-            res.status(404).json({
-                msg: "nothing found",
-                status: false,
-            });
+
+
+        const adventures = await db.query(`
+        SELECT 
+        id, type, title, summary, address, img_link, tags
+        FROM ADVENTURES 
+        ${filterQuery?.address === undefined ? '' : `WHERE ${filterQuery.address}`} 
+        INTERSECT
+        SELECT 
+        id, type, title, summary, address, img_link, tags
+        FROM ADVENTURES A
+        ${filterQuery?.type === undefined ? '' : `WHERE ${filterQuery.type}`}
+        INTERSECT
+        SELECT id, type, title, summary, address, img_link, tags
+        FROM ADVENTURES A
+        WHERE id in (
+        SELECT adventure_id
+        FROM PARTNERADVENTURELINK PAL
+        WHERE partner_id in (
+        SELECT id
+        FROM PARTNERS P
+        ${filterQuery?.pname === undefined ? '' : `WHERE ${filterQuery.pname}`}
+        ))
+        `);
+
+        if (!adventures.rowCount) {
+            throw new Error('No data');
         }
+
+        res.status(200).json({
+            data: adventures.rows,
+            status: true,
+        });
+
     } catch (error) {
         res.status(400).json({
             error: error,
@@ -338,8 +332,3 @@ export const getAdventuresByFilter = async (req, res) => {
         });
     }
 };
-
-/*
-
-adventures -> name, img, price-range, partners[0,1,2], location
-*/
