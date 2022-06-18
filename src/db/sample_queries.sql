@@ -123,7 +123,7 @@ WHERE id = partner_id)
 FROM PARTNERADVENTURELINK
 WHERE adventure_id = '2427b7df-f565-426e-a375-b0fb8d2dbcf1';
 
-DROP FUNCTION updateUserRecommendation;
+
 
 CREATE OR REPLACE FUNCTION updateUserRecommendation(userid uuid) 
    RETURNS JSON
@@ -172,3 +172,28 @@ BEGIN
 END; 
 
 $$
+
+SELECT *
+FROM USERS;
+
+SELECT 
+        id, type, title, summary, address, img_link, tags
+        FROM ADVENTURES A
+        WHERE A.address ILIKE 'A'
+        OR A.type ILIKE 'A'
+        UNION
+        SELECT id, type, title, summary, address, img_link, tags
+        FROM ADVENTURES A
+        WHERE id in (
+        SELECT adventure_id
+        FROM PARTNERADVENTURELINK PAL
+        WHERE partner_id in (
+        SELECT id
+        FROM PARTNERS P
+        WHERE P.pname ILIKE '%Alt%'
+        ));
+
+        
+select count(*), type
+from adventures
+group by type;
