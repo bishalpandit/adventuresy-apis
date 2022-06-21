@@ -150,7 +150,7 @@ export const getAdventureById = async (req, res) => {
 
 export const getAdventuresByCategory = async (req, res) => {
     try {
-        const query = req.query.cat;
+        const query = req.query.category;
 
         let categories = "(";
 
@@ -167,17 +167,10 @@ export const getAdventuresByCategory = async (req, res) => {
         FROM ADVENTURES 
         WHERE type IN ${categories}`);
 
-        if (adventure.rowCount) {
-            res.status(200).json({
-                data: adventure.rows,
-                status: true,
-            });
-        } else {
-            res.status(404).json({
-                msg: "not found",
-                status: false,
-            });
-        }
+        res.status(200).json({
+            data: adventure.rows,
+            status: true,
+        });
     } catch (error) {
         res.status(400).json({
             error: error,
@@ -218,10 +211,6 @@ export const getAdventuresBySearch = async (req, res) => {
         WHERE P.pname ILIKE ${searchQuery.partner}
         ))
         `);
-
-        if (!adventures.rowCount) {
-            throw new Error('No data');
-        }
 
         res.status(200).json({
             data: adventures.rows,
@@ -315,10 +304,6 @@ export const getAdventuresByFilter = async (req, res) => {
         ${filterQuery?.pname === undefined ? '' : `WHERE ${filterQuery.pname}`}
         ))
         `);
-
-        if (!adventures.rowCount) {
-            throw new Error('No data');
-        }
 
         res.status(200).json({
             data: adventures.rows,

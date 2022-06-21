@@ -197,3 +197,10 @@ SELECT
 select count(*), type
 from adventures
 group by type;
+
+
+update adventures
+set type = 'Air Ballon'
+where id = '354b75c4-2034-4d61-bbeb-bd61e1b40a09';
+select *
+from adventures;
